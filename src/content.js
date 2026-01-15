@@ -2,19 +2,19 @@
   function getSelectedText() {
     const selection = window.getSelection();
     const selectedText = selection.toString().trim();
-    
-    // 检查选区是否包含扩展的 Shadow DOM
+
+    // Check if selection includes extension's Shadow DOM
     if (selection.rangeCount > 0) {
       const range = selection.getRangeAt(0);
       const container = range.commonAncestorContainer;
-      
-      // 如果选区在扩展的 Shadow DOM 内，返回空字符串
-      if (extensionContainer.contains(container) || 
-          (shadow && shadow.contains(container))) {
+
+      // If selection is inside extension's Shadow DOM, return empty string
+      if (extensionContainer.contains(container) ||
+        (shadow && shadow.contains(container))) {
         return '';
       }
     }
-    
+
     return selectedText;
   }
 
@@ -78,37 +78,37 @@
 
   async function displayBookmarks() {
     try {
-      // 1. 获取所有书签
+      // 1. Get all bookmarks
       const bookmarks = await fetchBookmarks();
       const bookmarkListContainer = shadow.getElementById('bookmark-list');
       bookmarkListContainer.innerHTML = '';
 
-      // 2. 获取默认文件夹列表
+      // 2. Get default folder list
       const { defaultFolders } = await chrome.storage.sync.get('defaultFolders');
       const { lastViewedFolder } = await chrome.storage.local.get('lastViewedFolder');
-      
+
       let folderToShow = null;
       let folderContents = [];
 
-      // 3. 修改逻辑以匹配新标签页，但通过消息传递获取书签
+      // 3. Modify logic to match new tab page, but fetch bookmarks via message passing
       if (defaultFolders?.items?.length > 0) {
-        // 检查上次访问的文件夹是否在默认文件夹列表中
+        // Check if last viewed folder is in default folder list
         let folderToActivate;
-        
+
         if (lastViewedFolder && defaultFolders.items.some(f => f.id === lastViewedFolder)) {
           folderToActivate = lastViewedFolder;
         } else {
-          // 否则使用第一个默认文件夹
+          // Otherwise use first default folder
           folderToActivate = defaultFolders.items[0].id;
         }
-        
+
         try {
-          // 通过消息传递获取文件夹信息
-          const response = await chrome.runtime.sendMessage({ 
-            action: 'getBookmarkFolder', 
-            folderId: folderToActivate 
+          // Fetch folder info via message passing
+          const response = await chrome.runtime.sendMessage({
+            action: 'getBookmarkFolder',
+            folderId: folderToActivate
           });
-          
+
           if (response.success && response.folder) {
             folderToShow = response.folder;
             if (response.children) {
@@ -120,15 +120,15 @@
         }
       }
 
-      // 如果没有找到有效的文件夹，回退到根书签文件夹(id='1')
+      // If no valid folder found, fallback to root bookmark folder (id='1')
       if (!folderToShow) {
         try {
-          // 通过消息传递获取根文件夹信息
-          const response = await chrome.runtime.sendMessage({ 
-            action: 'getBookmarkFolder', 
-            folderId: '1' 
+          // Fetch root folder info via message passing
+          const response = await chrome.runtime.sendMessage({
+            action: 'getBookmarkFolder',
+            folderId: '1'
           });
-          
+
           if (response.success && response.folder) {
             folderToShow = response.folder;
             if (response.children) {
@@ -140,23 +140,23 @@
         }
       }
 
-      // 显示选定的文件夹内容
+      // Display selected folder content
       if (folderToShow) {
         if (folderToShow.url) {
           bookmarkListContainer.appendChild(createBookmarkElement(folderToShow));
         } else if (folderContents.length > 0) {
-          // 使用已获取的文件夹内容
+          // Use fetched folder content
           folderContents.forEach(child => {
             if (child.url) {
               bookmarkListContainer.appendChild(createBookmarkElement(child));
             }
           });
         } else {
-          // 如果没有预先获取的内容，尝试通过递归显示
+          // If no pre-fetched content, try recursive display
           displayBookmarksRecursive(folderToShow, bookmarkListContainer);
         }
       } else {
-        // 最后的回退方案：显示所有书签
+        // Final fallback: display all bookmarks
         displayBookmarksRecursive(bookmarks[0], bookmarkListContainer);
       }
 
@@ -199,7 +199,7 @@
         if (response && response.defaultBookmarkId !== undefined) {
           resolve(response.defaultBookmarkId);
         } else {
-          reject(new Error('无法获取默认书签 ID'));
+          reject(new Error('Cannot get default bookmark ID'));
         }
       });
     });
@@ -246,10 +246,10 @@
   shadow.appendChild(floatingButton);
   shadow.appendChild(sidebarContainer);
 
-  // 添加关闭按钮的点击事件处理
+  // Add click event handler for close button
   const closeButton = floatingButton.querySelector('.tooltip-close');
   closeButton?.addEventListener('click', (e) => {
-    e.stopPropagation(); // 阻止事件冒泡
+    e.stopPropagation(); // Prevent event bubbling
     chrome.storage.local.set({ 'hideFloatingTooltip': true }, () => {
       const tooltip = floatingButton.querySelector('.floating-tooltip');
       if (tooltip) {
@@ -258,7 +258,7 @@
     });
   });
 
-  // 检查是否需要显示提示
+  // Check if tooltip needs to be displayed
   chrome.storage.local.get(['hideFloatingTooltip'], (result) => {
     if (result.hideFloatingTooltip) {
       const tooltip = floatingButton.querySelector('.floating-tooltip');
@@ -339,8 +339,8 @@
 
   floatingButton.addEventListener('click', (event) => {
     if (event.altKey) {
-      // Alt + 点击打开侧边栏
-      chrome.runtime.sendMessage({ 
+      // Alt + Click to open side panel
+      chrome.runtime.sendMessage({
         action: 'openSidePanel'
       }, (response) => {
         if (chrome.runtime.lastError) {
@@ -348,7 +348,7 @@
         }
       });
     } else {
-      // 普通点击打开搜索面板
+      // Normal click to open search panel
       if (sidebarContainer) {
         sidebarContainer.classList.remove('collapsed');
       }
@@ -631,7 +631,7 @@
       line-height: 1.4;
     }
 
-    /* 箭头样式优化 */
+    /* Arrow style optimization */
     .floating-tooltip:after {
       content: '';
       position: absolute;
@@ -644,7 +644,7 @@
       box-shadow: 3px -3px 3px rgba(0, 0, 0, 0.05);
     }
 
-    /* 暗色模式适配 */
+    /* Dark mode adaptation */
     [data-theme="dark"] .floating-tooltip {
       background: #1f2937;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -975,16 +975,16 @@
   shadow.appendChild(style);
 
   function openSidePanel() {
-    chrome.runtime.sendMessage({ 
+    chrome.runtime.sendMessage({
       action: 'openSidePanel'
     }, (response) => {
       if (chrome.runtime.lastError || !response?.success) {
-        console.error('Failed to open side panel:', 
+        console.error('Failed to open side panel:',
           chrome.runtime.lastError?.message || response?.error || 'Unknown error');
-          
+
         // 如果失败，尝试延迟重试一次
         setTimeout(() => {
-          chrome.runtime.sendMessage({ 
+          chrome.runtime.sendMessage({
             action: 'openSidePanel',
             retry: true
           });

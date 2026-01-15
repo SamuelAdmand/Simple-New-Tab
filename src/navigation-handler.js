@@ -1,113 +1,113 @@
-// 导航处理脚本 - 用于处理iframe中的导航栏
+// Navigation handler script - for processing navbar in iframe
 
-// 保存当前URL，用于检测导航变化
+// Save current URL to detect navigation change
 let currentUrl = window.location.href;
 
-// 当文档加载完成时检测是否是侧边栏iframe
-document.addEventListener('DOMContentLoaded', function() {
-  // 检查URL参数是否包含侧边栏标记
+// Check if sidebar iframe when document loaded
+document.addEventListener('DOMContentLoaded', function () {
+  // Check if URL params contain sidebar flag
   const urlParams = new URLSearchParams(window.location.search);
-  const isSidePanel = urlParams.get('is_sidepanel') === 'true' || 
-                      urlParams.get('sidepanel_view') === 'true';
-  
+  const isSidePanel = urlParams.get('is_sidepanel') === 'true' ||
+    urlParams.get('sidepanel_view') === 'true';
+
   console.log('[Navigation Handler] Page loaded, is side panel:', isSidePanel);
-  
-  // 检查是否在iframe中
+
+  // Check if in iframe
   const isInIframe = window !== window.top;
-  
-  // 如果是在侧边栏iframe中
+
+  // If in sidebar iframe
   if (isSidePanel && isInIframe) {
     console.log('[Navigation Handler] This page is loaded in a side panel iframe');
-    
-    // 获取存储的导航数据
-    chrome.storage.local.get('sidePanelNavData', function(data) {
+
+    // Get stored navigation data
+    chrome.storage.local.get('sidePanelNavData', function (data) {
       if (data && data.sidePanelNavData) {
         const { history, currentIndex } = data.sidePanelNavData;
         injectNavBarInIframe(history, currentIndex, window.location.href);
       } else {
-        // 如果没有找到数据，使用默认值
+        // If no data found, use defaults
         injectNavBarInIframe([], 0, window.location.href);
       }
     });
-    
-    // 添加键盘快捷键监听
-    document.addEventListener('keydown', function(e) {
-      // Alt+Home 或 Alt+H 键回到主页
+
+    // Add keyboard shortcut listener
+    document.addEventListener('keydown', function (e) {
+      // Alt+Home or Alt+H to return home
       if ((e.altKey && e.key === 'Home') || (e.altKey && e.key === 'h')) {
         e.preventDefault();
         console.log('[Navigation Handler] Keyboard shortcut for home detected');
-        
-        // 直接调用Chrome API返回主页
+
+        // Directly call Chrome API to return home
         try {
-          chrome.runtime.sendMessage({ 
+          chrome.runtime.sendMessage({
             action: 'navigateHome',
             source: 'keyboard-shortcut',
             timestamp: Date.now()
           });
-        } catch(err) {
+        } catch (err) {
           console.error('[Navigation Handler] Failed to trigger home navigation via keyboard:', err);
         }
       }
-      // Alt+Left箭头 - 后退
+      // Alt+Left Arrow - Back
       if (e.altKey && e.key === 'ArrowLeft') {
         window.parent.postMessage({ action: 'navigateBack' }, '*');
       }
-      // Alt+Right箭头 - 前进
+      // Alt+Right Arrow - Forward
       else if (e.altKey && e.key === 'ArrowRight') {
         window.parent.postMessage({ action: 'navigateForward' }, '*');
       }
     });
-    
-    // 监听页面内的链接点击
-    document.addEventListener('click', function(e) {
-      // 查找是否点击的是链接
+
+    // Listen for link clicks in page
+    document.addEventListener('click', function (e) {
+      // Check if clicked element is a link
       let linkElement = e.target;
       while (linkElement && linkElement.tagName !== 'A') {
         linkElement = linkElement.parentElement;
       }
-      
-      // 如果点击的是链接
+
+      // If link is clicked
       if (linkElement && linkElement.tagName === 'A') {
         const href = linkElement.getAttribute('href');
         if (href && !href.startsWith('#') && !href.startsWith('javascript:')) {
-          // 记录点击链接的事件，用于后续通知父窗口更新历史记录
+          // Record link click event to notify parent window to update history
           console.log('[Navigation Handler] Link clicked:', href);
-          
-          // 对于相对路径，转换为绝对路径
+
+          // Convert relative path to absolute path
           const absoluteUrl = new URL(href, window.location.href).href;
-          
-          // 如果是新窗口或新标签页打开，仍然让浏览器处理
+
+          // If open in new window or new tab, let browser handle it
           if (linkElement.target === '_blank' || e.ctrlKey || e.metaKey) {
             return;
           }
-          
-          // 否则拦截点击，通知父窗口进行导航
+
+          // Otherwise intercept click, notify parent window to navigate
           e.preventDefault();
-          
-          // 添加sidepanel_view参数
+
+          // Add sidepanel_view param
           const urlObj = new URL(absoluteUrl);
           urlObj.searchParams.set('sidepanel_view', 'true');
           const urlWithParam = urlObj.toString();
-          
-          // 通知父窗口更新历史记录并导航
+
+          // Notify parent window to update history and navigate
           window.parent.postMessage({
             action: 'navigateToUrl',
             url: urlWithParam
           }, '*');
-          
-          // 直接在当前窗口导航
+
+          // Directly navigate in current window
           window.location.href = urlWithParam;
         }
       }
     });
-    
-    // 监听URL变化 (SPA应用和pushState变化)
+
+    // Listen for URL changes (SPA apps and pushState changes)
     let lastUrl = window.location.href;
-    // 创建监听器检查URL变化
+    // Create listener to check URL changes
     const urlChangeChecker = setInterval(() => {
       if (lastUrl !== window.location.href) {
         console.log('[Navigation Handler] URL changed from:', lastUrl, 'to:', window.location.href);
-        // 通知父窗口更新历史记录
+        // Notify parent window to update history
         window.parent.postMessage({
           action: 'updateHistory',
           url: window.location.href
@@ -115,8 +115,8 @@ document.addEventListener('DOMContentLoaded', function() {
         lastUrl = window.location.href;
       }
     }, 500);
-    
-    // 页面卸载时清除检查器
+
+    // Clear checker when page unloads
     window.addEventListener('unload', () => {
       clearInterval(urlChangeChecker);
     });
@@ -125,40 +125,40 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-// 监听postMessage消息
-window.addEventListener('message', function(event) {
+// Listen for postMessage
+window.addEventListener('message', function (event) {
   console.log('[Navigation Handler] Received message:', event.data);
-  
+
   if (!event.data || typeof event.data !== 'object') return;
-  
+
   const { action } = event.data;
-  
-  // 如果是导航操作，转发到父窗口
+
+  // If navigation action, forward to parent window
   if (action === 'navigateHome' || action === 'navigateBack' || action === 'navigateForward') {
     if (window !== window.top) {
-      // 在iframe中，发送消息到父窗口
+      // In iframe, send message to parent window
       window.parent.postMessage(event.data, '*');
     }
   } else if (action === 'injectNavBarInIframe') {
-    // 接收来自sidepanel-manager.js的消息，在iframe中注入导航栏
+    // Receive message from sidepanel-manager.js, inject navbar in iframe
     const { history, currentIndex, url } = event.data;
     injectNavBarInIframe(history, currentIndex, url);
   }
 });
 
-// 在iframe中注入导航栏
+// Inject navbar in iframe
 function injectNavBarInIframe(history, currentIndex, url) {
   console.log('[Navigation Handler] Injecting navigation bar in iframe');
-  
-  // 检查是否已经存在导航栏
-  if (document.querySelector('.iframe-sidepanel-nav-bar') || 
-      document.querySelector('.sidepanel-nav-bar') || 
-      document.querySelector('.simple-nav-bar')) {
+
+  // Check if navbar already exists
+  if (document.querySelector('.iframe-sidepanel-nav-bar') ||
+    document.querySelector('.sidepanel-nav-bar') ||
+    document.querySelector('.simple-nav-bar')) {
     console.log('[Navigation Handler] Navigation bar already exists');
     return;
   }
-  
-  // 创建样式
+
+  // Create styles
   const style = document.createElement('style');
   style.textContent = `
     .iframe-sidepanel-nav-bar {
@@ -239,53 +239,53 @@ function injectNavBarInIframe(history, currentIndex, url) {
       }
     }
   `;
-  
-  // 创建导航栏
+
+  // Create navbar
   const navBar = document.createElement('div');
   navBar.className = 'iframe-sidepanel-nav-bar';
-  
-  // 添加返回主页按钮
+
+  // Add home button
   const homeButton = document.createElement('button');
-  homeButton.id = 'iframe-home-button'; // 添加ID便于选择
-  homeButton.title = '返回书签列表'; // 添加title属性用于选择器匹配
-  homeButton.innerHTML = '<span>返回书签列表</span>';
-  
-  // 直接使用Chrome API实现导航回主页
+  homeButton.id = 'iframe-home-button'; // Add ID for easier selection
+  homeButton.title = 'Return to Bookmark List'; // Add title for selector matching
+  homeButton.innerHTML = '<span>Return to Bookmarks</span>';
+
+  // Use Chrome API to navigate home
   const navigateToHome = () => {
     console.log('[Navigation Handler] Executing direct home navigation');
-    
-    // 尝试多种方法返回主页
+
+    // Try multiple methods to return home
     let succeeded = false;
-    
-    // 1. 尝试直接设置URL
+
+    // 1. Try setting URL directly
     try {
       console.log('[Navigation Handler] Attempting direct URL navigation');
-      // 获取扩展根URL
+      // Get extension root URL
       const extensionUrl = chrome.runtime.getURL('src/sidepanel.html');
-      
-      // 由于iframe中可能受到限制，通知父窗口执行导航
-      window.parent.postMessage({ 
+
+      // Since iframe might be restricted, notify parent window to navigate
+      window.parent.postMessage({
         action: 'directNavigate',
-        url: extensionUrl 
+        url: extensionUrl
       }, '*');
-      
-      // 也尝试自己导航（可能会被阻止）
+
+      // Also try navigating self (might be blocked)
       try {
         window.top.location.href = extensionUrl;
         succeeded = true;
       } catch (e) {
         console.log('[Navigation Handler] Could not navigate top window, continuing with other methods');
       }
-      
+
       return true;
     } catch (e) {
       console.error('[Navigation Handler] Direct URL navigation failed:', e);
     }
-    
-    // 2. 优先使用Chrome API
+
+    // 2. Prioritize Chrome API
     if (!succeeded && typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
       try {
-        chrome.runtime.sendMessage({ 
+        chrome.runtime.sendMessage({
           action: 'navigateHome',
           source: 'iframe-direct',
           timestamp: Date.now()
@@ -297,14 +297,14 @@ function injectNavBarInIframe(history, currentIndex, url) {
         console.error('[Navigation Handler] Chrome API navigation failed:', e);
       }
     }
-    
-    // 3. 备用方法：通过父窗口通信
+
+    // 3. Backup method: communication via parent window
     if (!succeeded) {
       try {
-        window.parent.postMessage({ 
+        window.parent.postMessage({
           action: 'navigateHome',
           source: 'iframe-backup',
-          timestamp: Date.now() 
+          timestamp: Date.now()
         }, '*');
         console.log('[Navigation Handler] Sent home navigation message to parent');
         return true;
@@ -314,58 +314,62 @@ function injectNavBarInIframe(history, currentIndex, url) {
       }
     }
   };
-  
-  // 添加点击和其他事件
+
+  // Add click and other events
   homeButton.addEventListener('click', (e) => {
     e.preventDefault();
     console.log('[Navigation Handler] Home button clicked in iframe');
     navigateToHome();
   });
-  
-  // 添加双击事件作为备份
+
+  // Add double-click as backup
   homeButton.addEventListener('dblclick', (e) => {
     e.preventDefault();
     console.log('[Navigation Handler] Home button double-clicked in iframe');
     navigateToHome();
   });
-  
-  // 添加前进后退按钮
+
+  // Add back/forward buttons
   const backButton = document.createElement('button');
-  backButton.innerHTML = '<span>后退</span>';
+  backButton.innerHTML = '<span>Back</span>';
+  backButton.title = 'Back';
   backButton.disabled = !history || currentIndex <= 0;
   backButton.addEventListener('click', () => {
-    // 向父窗口发送消息，请求后退
+    // Send message to parent window, requesting back
     window.parent.postMessage({ action: 'navigateBack' }, '*');
   });
-  
+
   const forwardButton = document.createElement('button');
-  forwardButton.innerHTML = '<span>前进</span>';
+  forwardButton.innerHTML = '<span>Forward</span>';
+  forwardButton.title = 'Forward';
   forwardButton.disabled = !history || currentIndex >= history.length - 1;
   forwardButton.addEventListener('click', () => {
-    // 向父窗口发送消息，请求前进
+    // Send message to parent window, requesting forward
     window.parent.postMessage({ action: 'navigateForward' }, '*');
   });
-  
-  // 添加刷新按钮
+
+  // Add refresh button
   const refreshButton = document.createElement('button');
-  refreshButton.innerHTML = '<span>刷新</span>';
+  refreshButton.innerHTML = '<span>Refresh</span>';
+  refreshButton.title = 'Refresh';
   refreshButton.addEventListener('click', () => {
     window.location.reload();
   });
-  
-  // 添加在新标签页中打开按钮
+
+  // Add open in new tab button
   const openInTabButton = document.createElement('button');
-  openInTabButton.innerHTML = '<span>新标签页</span>';
+  openInTabButton.innerHTML = '<span>New Tab</span>';
+  openInTabButton.title = 'Open in New Tab';
   openInTabButton.addEventListener('click', () => {
-    // 向父窗口发送消息，请求在新标签页中打开
+    // Send message to parent window, requesting open in new tab
     window.parent.postMessage({ action: 'openInNewTab' }, '*');
   });
-  
-  // 添加URL显示
+
+  // Add URL display
   const urlDisplay = document.createElement('div');
   urlDisplay.className = 'url-display';
-  urlDisplay.textContent = url || window.location.href.split('?')[0]; // 移除URL参数
-  
+  urlDisplay.textContent = url || window.location.href.split('?')[0]; // Remove URL params
+
   // 将元素添加到导航栏
   navBar.appendChild(homeButton);
   navBar.appendChild(backButton);
@@ -373,24 +377,24 @@ function injectNavBarInIframe(history, currentIndex, url) {
   navBar.appendChild(refreshButton);
   navBar.appendChild(openInTabButton);
   navBar.appendChild(urlDisplay);
-  
-  // 将样式和导航栏添加到文档
+
+  // Add styles and navbar to document
   document.head.appendChild(style);
   document.body.insertBefore(navBar, document.body.firstChild);
-  
+
   console.log('[Navigation Handler] Navigation bar injected successfully');
-  
-  // 添加导航按钮事件监听
-  const iframeHomeButton = document.querySelector('.iframe-sidepanel-nav-bar button[title="返回书签列表"]');
-  const iframeBackButton = document.querySelector('.iframe-sidepanel-nav-bar button[title="返回上一页"]');
-  const iframeForwardButton = document.querySelector('.iframe-sidepanel-nav-bar button[title="前进到下一页"]');
-  
+
+  // Add navigation button event listeners
+  const iframeHomeButton = document.querySelector('.iframe-sidepanel-nav-bar button[title="Return to Bookmark List"]');
+  const iframeBackButton = document.querySelector('.iframe-sidepanel-nav-bar button[title="Back"]');
+  const iframeForwardButton = document.querySelector('.iframe-sidepanel-nav-bar button[title="Forward"]');
+
   if (iframeHomeButton) {
     iframeHomeButton.addEventListener('click', () => {
       console.log('[Navigation Handler] Home button clicked in iframe');
-      // 发送消息到父窗口
+      // Send message to parent window
       window.parent.postMessage({ action: 'navigateHome' }, '*');
-      // 同时尝试通过chrome API发送
+      // Also try message via chrome API
       try {
         chrome.runtime.sendMessage({ action: 'navigateHome' });
       } catch (e) {
@@ -398,7 +402,7 @@ function injectNavBarInIframe(history, currentIndex, url) {
       }
     });
   }
-  
+
   if (iframeBackButton) {
     iframeBackButton.addEventListener('click', () => {
       console.log('[Navigation Handler] Back button clicked in iframe');
@@ -410,7 +414,7 @@ function injectNavBarInIframe(history, currentIndex, url) {
       }
     });
   }
-  
+
   if (iframeForwardButton) {
     iframeForwardButton.addEventListener('click', () => {
       console.log('[Navigation Handler] Forward button clicked in iframe');

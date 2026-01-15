@@ -1,23 +1,23 @@
 import { ICONS } from './icons.js';
 
-// 新功能提示管理类
+// New feature tips management class
 class FeatureTips {
     constructor() {
-        this.fadeOutDuration = 300; // 淡出动画时长(毫秒)
-        this.tipQueue = []; // 提示队列，用于顺序显示提示
-        this.isShowingTip = false; // 是否正在显示提示
-        this.tipsInitialized = false; // 标记提示是否已初始化
-        this.isProcessing = false; // 防止重复处理
-        this.checkTimeout = null; // 用于防抖处理
-        this.hasCheckedSettingsTip = false; // 标记是否已检查过设置提示
-        this.domReady = false; // 标记DOM是否已准备好
-        this.pageLoaded = false; // 标记页面是否已完全加载
-        this.initStarted = false; // 标记初始化是否已开始
+        this.fadeOutDuration = 300; // Fade out duration (ms)
+        this.tipQueue = []; // Tip queue for sequential display
+        this.isShowingTip = false; // Is showing tip
+        this.tipsInitialized = false; // Tip initialization flag
+        this.isProcessing = false; // Prevent duplicate processing
+        this.checkTimeout = null; // For debounce processing
+        this.hasCheckedSettingsTip = false; // Flag for checking if settings tip has been checked
+        this.domReady = false; // Flag for DOM ready
+        this.pageLoaded = false; // Flag for page fully loaded
+        this.initStarted = false; // Flag for initialization started
 
-        // 立即隐藏所有提示，防止闪烁
+        // Immediately hide all tips to prevent flickering
         this.hideAllTipsImmediately();
 
-        // 等待DOM加载完成
+        // Wait for DOM content loaded
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {
                 this.domReady = true;
@@ -29,14 +29,14 @@ class FeatureTips {
             this.startInit();
         }
 
-        // 监听页面完全加载
+        // Listen for page fully loaded
         window.addEventListener('load', () => {
             this.pageLoaded = true;
             this.startInit();
         });
     }
 
-    // 开始初始化流程
+    // Start initialization process
     startInit() {
         if (this.initStarted || !this.domReady || !this.pageLoaded) {
             return;
@@ -45,9 +45,9 @@ class FeatureTips {
         this.init();
     }
 
-    // 立即隐藏所有提示
+    // Immediately hide all tips
     hideAllTipsImmediately() {
-        // 使用 style 标签立即隐藏提示，避免 CSS 加载延迟导致的闪烁
+        // Use style tag to immediately hide tips avoiding flicker from CSS load delay
         const style = document.createElement('style');
         style.textContent = `
             .settings-update-tip {
@@ -58,7 +58,7 @@ class FeatureTips {
         `;
         document.head.appendChild(style);
 
-        // 移除可能存在的旧样式
+        // Remove potential old styles
         const oldStyle = document.getElementById('feature-tips-style');
         if (oldStyle) {
             oldStyle.remove();
@@ -66,73 +66,73 @@ class FeatureTips {
         style.id = 'feature-tips-style';
     }
 
-    // 重置提示样式
+    // Reset tip styles
     resetTipStyle(tipContainer) {
-        // 移除内联样式和之前添加的类
+        // Remove inline styles and previously added classes
         tipContainer.style.cssText = '';
         tipContainer.classList.remove('tip-fade-out');
-        
-        // 移除 !important 样式的影响
+
+        // Remove !important style influence
         const style = document.getElementById('feature-tips-style');
         if (style) {
             style.remove();
         }
 
-        // 设置初始样式
+        // Set initial styles
         tipContainer.style.display = 'block';
         tipContainer.style.opacity = '0';
         tipContainer.style.visibility = 'visible';
-        
-        // 强制重排以确保样式生效
+
+        // Force reflow to ensure styles apply
         void tipContainer.offsetHeight;
     }
 
-    // 初始化
+    // Initialize
     async init() {
         try {
-            // 获取当前版本号
+            // Get current version
             this.currentVersion = await this.getExtensionVersion();
-            console.log('[FeatureTips] 当前版本:', this.currentVersion);
-            
-            // 检查版本更新
+            console.log('[FeatureTips] Current version:', this.currentVersion);
+
+            // Check for version updates
             await this.checkVersionUpdate();
-            
-            // 开始处理提示队列
+
+            // Start processing tip queue
             setTimeout(() => {
                 this.processNextTip();
             }, 1000);
         } catch (error) {
-            console.error('[FeatureTips] 初始化错误:', error);
+            console.error('[FeatureTips] Initialization error:', error);
         }
     }
 
-    // 获取扩展版本号
+    // Get extension version
     async getExtensionVersion() {
         const manifest = chrome.runtime.getManifest();
         return manifest.version;
     }
 
-    // 检查版本更新
+    // Check for version updates
     async checkVersionUpdate() {
         const lastVersion = localStorage.getItem('lastVersion');
-        console.log('[FeatureTips] 当前版本:', this.currentVersion, '上一版本:', lastVersion);
+        console.log('[FeatureTips] Current version:', this.currentVersion, 'Last version:', lastVersion);
 
         if (!lastVersion || this.isNewerVersion(this.currentVersion, lastVersion)) {
-            // 获取该版本的所有新功能提示
+            // Get all new feature tips for this version
             const features = await this.getVersionFeatures(lastVersion, this.currentVersion);
-            console.log('[FeatureTips] 新功能列表:', features);
+            console.log('[FeatureTips] New feature list:', features);
 
-            // 将新功能提示添加到队列
+            // Add new feature tips to queue
             for (const feature of features) {
                 this.queueShowTips(feature);
             }
 
-            // 更新存储的版本号
+            // Update stored version number
             localStorage.setItem('lastVersion', this.currentVersion);
         }
     }
 
-    // 比较版本号
+    // Compare version numbers
     isNewerVersion(current, last) {
         if (!last) return true;
 
@@ -146,9 +146,9 @@ class FeatureTips {
         return false;
     }
 
-    // 获取版本之间的新功能
+    // Get new features between versions
     getVersionFeatures(lastVersion, currentVersion) {
-        // 版本功能映射表
+        // Version feature map
         const versionFeatures = {
             '1.238': ['bookmarkCleanup'],
             '1.239': ['sidebarFeatures'],
@@ -160,13 +160,13 @@ class FeatureTips {
 
         const features = [];
 
-        // 如果是新安装（lastVersion 为 null），只显示当前版本的功能
+        // If new install (lastVersion is null), only show current version features
         if (!lastVersion) {
             const currentFeatures = versionFeatures[currentVersion];
             return currentFeatures ? currentFeatures : [];
         }
 
-        // 获取版本之间的所有新功能
+        // Get all new features between versions
         for (const [version, featureList] of Object.entries(versionFeatures)) {
             if (this.isNewerVersion(version, lastVersion) &&
                 !this.isNewerVersion(version, currentVersion)) {
@@ -177,12 +177,12 @@ class FeatureTips {
         return features;
     }
 
-    // 将提示添加到队列
+    // Add tip to queue
     queueShowTips(featureKey) {
         const storageKey = `hasShown${featureKey}Tips`;
         const hasShownTips = localStorage.getItem(storageKey);
 
-        console.log('[FeatureTips] 检查提示:', featureKey, '已显示:', hasShownTips);
+        console.log('[FeatureTips] Check tip:', featureKey, 'Shown:', hasShownTips);
 
         if (!hasShownTips) {
             this.tipQueue.push({
@@ -192,19 +192,19 @@ class FeatureTips {
         }
     }
 
-    // 处理队列中的下一个提示
+    // Process next tip in queue
     processNextTip() {
-        // 如果正在处理中或已经检查过所有提示，直接返回
+        // If processing or all tips checked, return
         if (this.isProcessing || (this.hasCheckedSettingsTip)) {
             return;
         }
 
-        console.log('[FeatureTips] 处理下一个提示, 队列长度:', this.tipQueue.length, '是否正在显示:', this.isShowingTip);
-        
+        console.log('[FeatureTips] Process next tip, queue length:', this.tipQueue.length, 'Is showing:', this.isShowingTip);
+
         if (this.isShowingTip || this.tipQueue.length === 0) {
-            // 如果没有新功能提示或已经显示完，检查是否需要显示设置提示
+            // If no new feature tips or all shown, check if settings tip needed
             if (!this.isShowingTip && this.tipQueue.length === 0 && !this.hasCheckedSettingsTip) {
-                console.log('[FeatureTips] 新功能提示队列为空，检查设置提示');
+                console.log('[FeatureTips] New feature tip queue empty, checking settings tip');
                 this.isProcessing = true;
                 this.checkSettingsTip();
             }
@@ -214,20 +214,20 @@ class FeatureTips {
         this.isProcessing = true;
         const { featureKey, storageKey } = this.tipQueue.shift();
         this.isShowingTip = true;
-        
+
         requestAnimationFrame(() => {
             this.showTips(featureKey);
             localStorage.setItem(storageKey, 'true');
         });
     }
 
-    // 检查是否需要显示设置提示
+    // Check if settings tip needs to be displayed
     checkSettingsTip() {
         if (this.checkTimeout) {
             clearTimeout(this.checkTimeout);
         }
 
-        // 如果已经检查过设置提示，直接返回
+        // If settings tip already checked, return
         if (this.hasCheckedSettingsTip && localStorage.getItem('settingsUpdateTipShown') === 'true') {
             this.isProcessing = false;
             return;
@@ -237,7 +237,7 @@ class FeatureTips {
         this.checkTimeout = setTimeout(() => {
             const settingsTipShown = localStorage.getItem('settingsUpdateTipShown') === 'true';
             if (!settingsTipShown) {
-                console.log('[FeatureTips] 显示设置提示');
+                console.log('[FeatureTips] Showing settings tip');
                 this.showSettingsUpdateTip();
             } else {
                 this.isProcessing = false;
@@ -245,14 +245,14 @@ class FeatureTips {
         }, 100);
     }
 
-    // 显示新功能提示
+    // Show new feature tip
     showTips(featureKey) {
-        console.log('[FeatureTips] 显示提示:', featureKey);
+        console.log('[FeatureTips] Showing tip:', featureKey);
 
         const tipsElement = document.createElement('div');
         tipsElement.className = 'feature-tips';
 
-        // 获取消息文本并将 \n 转换为 <br>
+        // Get message text and convert \n to <br>
         const messageText = chrome.i18n.getMessage(featureKey + 'Feature').replace(/\n/g, '<br>');
 
         tipsElement.innerHTML = `
@@ -263,7 +263,7 @@ class FeatureTips {
             <div class="feature-tips-title">${chrome.i18n.getMessage('newFeatureTitle')}</div>
             <div class="feature-description">${messageText}</div>
           </div>
-          <button class="tip-close" aria-label="关闭提示">
+          <button class="tip-close" aria-label="Close Tip">
             ${ICONS.close}
           </button>
         </div>
@@ -272,70 +272,70 @@ class FeatureTips {
 
         document.body.appendChild(tipsElement);
 
-        // 添加关闭按钮事件监听
+        // Add close button event listener
         const closeButton = tipsElement.querySelector('.tip-close');
         closeButton.addEventListener('click', () => {
             this.closeTips(tipsElement);
         });
     }
 
-    // 关闭提示
+    // Close tip
     closeTips(tipsElement) {
         tipsElement.style.opacity = '0';
         setTimeout(() => {
             tipsElement.remove();
             this.isShowingTip = false;
-            this.isProcessing = false; // 重置处理状态
-            // 处理队列中的下一个提示
+            this.isProcessing = false; // Reset processing state
+            // Process next tip in queue
             this.processNextTip();
         }, this.fadeOutDuration);
     }
 
-    // 初始化所有提示
+    // Initialize all tips
     initAllTips() {
-        // 防止重复初始化
+        // Prevent duplicate initialization
         if (this.tipsInitialized) {
             return;
         }
         this.tipsInitialized = true;
-        
-        // 重置检查状态
+
+        // Reset check state
         this.hasCheckedSettingsTip = false;
-        
-        // 确保DOM已完全加载
+
+        // Ensure DOM fully loaded
         if (!this.domReady || !this.pageLoaded) {
             return;
         }
 
-        // 预先隐藏所有提示
+        // Pre-hide all tips
         this.hideAllTipsImmediately();
-        
-        // 开始检查提示
+
+        // Start checking tips
         this.startTipsCheck();
     }
 
-    // 显示设置更新提示
+    // Show settings update tip
     showSettingsUpdateTip() {
         if (this.isShowingTip || !this.domReady || !this.pageLoaded) {
             return;
         }
-        
-        // 检查localStorage，如果已经显示过，直接返回
+
+        // Check localStorage, if shown return
         if (localStorage.getItem('settingsUpdateTipShown') === 'true') {
             this.isShowingTip = false;
             this.isProcessing = false;
             return;
         }
-        
+
         this.isShowingTip = true;
         const tipContainer = document.querySelector('.settings-update-tip');
         if (tipContainer) {
-            console.log('[FeatureTips] 显示设置更新提示');
-            
-            // 重置提示样式
+            console.log('[FeatureTips] Showing settings update tip');
+
+            // Reset tip styles
             this.resetTipStyle(tipContainer);
-            
-            // 使用 requestAnimationFrame 和 setTimeout 确保动画平滑
+
+            // Use requestAnimationFrame and setTimeout for smooth animation
             requestAnimationFrame(() => {
                 setTimeout(() => {
                     tipContainer.style.opacity = '1';
@@ -346,7 +346,7 @@ class FeatureTips {
             if (closeButton) {
                 const newCloseButton = closeButton.cloneNode(true);
                 closeButton.parentNode.replaceChild(newCloseButton, closeButton);
-                
+
                 newCloseButton.addEventListener('click', () => {
                     tipContainer.classList.add('tip-fade-out');
                     tipContainer.style.opacity = '0';
@@ -358,24 +358,24 @@ class FeatureTips {
                     }, 300);
                 });
             } else {
-                console.warn('[FeatureTips] 设置提示关闭按钮未找到');
+                console.warn('[FeatureTips] Settings tip close button not found');
                 this.isShowingTip = false;
                 this.isProcessing = false;
             }
         } else {
-            console.warn('[FeatureTips] 设置提示容器未找到');
+            console.warn('[FeatureTips] Settings tip container not found');
             this.isShowingTip = false;
             this.isProcessing = false;
         }
     }
 
-    // 开始检查提示
+    // Start checking tips
     startTipsCheck() {
         if (this.checkTimeout) {
             clearTimeout(this.checkTimeout);
         }
 
-        // 确保页面和DOM都已加载完成
+        // Ensure page and DOM fully loaded
         if (!this.domReady || !this.pageLoaded) {
             return;
         }
@@ -388,5 +388,5 @@ class FeatureTips {
     }
 }
 
-// 导出单例实例
+// Export singleton instance
 export const featureTips = new FeatureTips();

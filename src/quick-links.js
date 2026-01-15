@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const quickLinksContainer = document.getElementById('quick-links');
   const MAX_DISPLAY = 10;
 
-  // 添加快捷链接专用的状态变量
+  // Add state variable for quick links deletion
   let quickLinkToDelete = null;
 
   function faviconURL(u) {
@@ -16,83 +16,83 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function getSiteName(title, url) {
-    const MAX_WIDTH_EN = 16; // 英文最大宽度
-    const MAX_WIDTH_CN = 14; // 中文最大宽度（允许7个中文字符）
-    const MAX_WIDTH_MIXED = 15; // 混合语言最大宽度
+    const MAX_WIDTH_EN = 16; // Max width for English
+    const MAX_WIDTH_CN = 14; // Max width for Chinese (allows 7 Chinese characters)
+    const MAX_WIDTH_MIXED = 15; // Max width for mixed language
 
     function getVisualWidth(str) {
-        return str.split('').reduce((width, char) => {
-            return width + (/[\u4e00-\u9fa5]/.test(char) ? 2 : 1);
-        }, 0);
+      return str.split('').reduce((width, char) => {
+        return width + (/[\u4e00-\u9fa5]/.test(char) ? 2 : 1);
+      }, 0);
     }
 
     function cleanTitle(title) {
-        if (!title || typeof title !== 'string') return '';
-        
-        // 移除常见的无用后缀
-        title = title.replace(/\s*[-|·:]\s*.*$/, '');
-        
-        // 移除常见的网站后缀保留有效的标题部分
-        title = title.replace(/\s*(官方网站|首页|网|网站|官网)$/, '');
-        
-        // 如果标题太长，尝试提取品牌名
-        if (title.length > 20) {
-            const parts = title.split(/\s+/);
-            title = parts.length > 1 ? parts.slice(0, 2).join(' ') : title.substring(0, 20);
-        }
-        
-        // 如果清理后仍为空，返回原始标题的某种变体
-        const cleanedTitle = title.trim();
-        if (cleanedTitle === '') {
-            return title;
-        }
-        
-        return cleanedTitle;
+      if (!title || typeof title !== 'string') return '';
+
+      // Remove common useless suffixes
+      title = title.replace(/\s*[-|·:]\s*.*$/, '');
+
+      // Remove common website suffixes to keep valid title part
+      title = title.replace(/\s*(Official Website|Home|Web|Website|Official)$/, '');
+
+      // If title is too long, try to extract brand name
+      if (title.length > 20) {
+        const parts = title.split(/\s+/);
+        title = parts.length > 1 ? parts.slice(0, 2).join(' ') : title.substring(0, 20);
+      }
+
+      // If still empty after cleaning, return some variation of original title
+      const cleanedTitle = title.trim();
+      if (cleanedTitle === '') {
+        return title;
+      }
+
+      return cleanedTitle;
     }
 
     title = cleanTitle(title);
 
-    // 处理标题
+    // Process title
     if (title && title.trim() !== '') {
-        const visualWidth = getVisualWidth(title);
-        const chineseCharCount = (title.match(/[\u4e00-\u9fa5]/g) || []).length;
-        const chineseRatio = chineseCharCount / title.length;
+      const visualWidth = getVisualWidth(title);
+      const chineseCharCount = (title.match(/[\u4e00-\u9fa5]/g) || []).length;
+      const chineseRatio = chineseCharCount / title.length;
 
-        let maxWidth;
-        if (chineseRatio === 0) {
-            maxWidth = MAX_WIDTH_EN;
-        } else if (chineseRatio === 1) {
-            maxWidth = MAX_WIDTH_CN;
-        } else {
-            maxWidth = Math.round(MAX_WIDTH_MIXED * (1 - chineseRatio) + MAX_WIDTH_CN * chineseRatio / 2);
-        }
+      let maxWidth;
+      if (chineseRatio === 0) {
+        maxWidth = MAX_WIDTH_EN;
+      } else if (chineseRatio === 1) {
+        maxWidth = MAX_WIDTH_CN;
+      } else {
+        maxWidth = Math.round(MAX_WIDTH_MIXED * (1 - chineseRatio) + MAX_WIDTH_CN * chineseRatio / 2);
+      }
 
-        if (visualWidth > maxWidth) {
-            let truncated = '';
-            let currentWidth = 0;
-            for (let char of title) {
-                const charWidth = /[\u4e00-\u9fa5]/.test(char) ? 2 : 1;
-                if (currentWidth + charWidth > maxWidth) break;
-                truncated += char;
-                currentWidth += charWidth;
-            }
-            return truncated; // 返回截断后的标题
+      if (visualWidth > maxWidth) {
+        let truncated = '';
+        let currentWidth = 0;
+        for (let char of title) {
+          const charWidth = /[\u4e00-\u9fa5]/.test(char) ? 2 : 1;
+          if (currentWidth + charWidth > maxWidth) break;
+          truncated += char;
+          currentWidth += charWidth;
         }
-        return title; // 返回清理后的标题
+        return truncated; // Return truncated title
+      }
+      return title; // Return cleaned title
     } else {
-        // 处理 URL
-        try {
-            const hostname = new URL(url).hostname;
-            let name = hostname.replace(/^www\./, '').split('.')[0];
-            name = name.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/-/g, ' ');
-            return getVisualWidth(name) > MAX_WIDTH_EN ? name.substring(0, MAX_WIDTH_EN) : name;
-        } catch (error) {
-            return 'Unknown Site';
-        }
+      // Process URL
+      try {
+        const hostname = new URL(url).hostname;
+        let name = hostname.replace(/^www\./, '').split('.')[0];
+        name = name.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/-/g, ' ');
+        return getVisualWidth(name) > MAX_WIDTH_EN ? name.substring(0, MAX_WIDTH_EN) : name;
+      } catch (error) {
+        return 'Unknown Site';
+      }
     }
   }
 
-  // 获取固定的快捷方式
+  // Get fixed shortcuts
   function getFixedShortcuts() {
     return new Promise((resolve) => {
       chrome.storage.sync.get('fixedShortcuts', (result) => {
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // 更新固定的快捷方式
+  // Update fixed shortcuts
   function updateFixedShortcut(updatedSite, oldUrl) {
     chrome.storage.sync.get('fixedShortcuts', (result) => {
       let fixedShortcuts = result.fixedShortcuts || [];
@@ -122,25 +122,25 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // 智能排序历史记录
+  // Intelligent sorting of history records
   function sortHistoryItems(items) {
     const now = new Date().getTime();
     const DAY_IN_MS = 24 * 60 * 60 * 1000;
     const MONTH_IN_MS = 30 * DAY_IN_MS;
-    const WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000; // 一周的毫秒数
+    const WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000; // Milliseconds in a week
 
-    // 创建一个 Map 来存储每个主域名的访问信息
+    // Create a Map to store visit info for each main domain
     const domainVisits = new Map();
 
-    // 计算每个域名的访问次数和最后访问时间，同时保存主页面和子页面信息
+    // Calculate visit count and last visit time for each domain, while saving main and sub page info
     items.forEach(item => {
       const url = new URL(item.url);
       const domain = url.hostname;
       const path = url.pathname + url.search;
-      
+
       if (!domainVisits.has(domain)) {
-        domainVisits.set(domain, { 
-          totalCount: 0, 
+        domainVisits.set(domain, {
+          totalCount: 0,
           lastVisit: 0,
           mainPage: null,
           lastSubPage: null,
@@ -150,22 +150,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const domainInfo = domainVisits.get(domain);
       domainInfo.totalCount += 1;
-      
+
       if (item.lastVisitTime > domainInfo.lastVisit) {
         domainInfo.lastVisit = item.lastVisitTime;
       }
 
-      // 使用新的更新逻辑
+      // Use new update logic
       updateDomainPageInfo(domainInfo, item);
     });
 
-    // 将 Map 转换为数组并排序
+    // Convert Map to array and sort
     return Array.from(domainVisits.entries())
       .map(([domain, info]) => {
-        // 优先选择主页面，如果没有主页面则选择最后访问的子页面
+        // Prioritize main page, if no main page then choose last visited sub page
         const representativeItem = info.mainPage || info.lastSubPage;
-        
-        if (!representativeItem) return null; // 跳过没有有效项目的域名
+
+        if (!representativeItem) return null; // Skip domains without valid items
 
         return {
           domain: domain,
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function () {
           visitCount: info.totalCount
         };
       })
-      .filter(item => item !== null) // 移除空项
+      .filter(item => item !== null) // Remove empty items
       .sort((a, b) => {
         const recencyScoreA = Math.exp(-(now - a.lastVisitTime) / WEEK_IN_MS);
         const recencyScoreB = Math.exp(-(now - b.lastVisitTime) / WEEK_IN_MS);
@@ -187,26 +187,26 @@ document.addEventListener('DOMContentLoaded', function () {
       });
   }
 
-  // 1. 添加缓存机制
+  // 1. Add caching mechanism
   const quickLinksCache = {
     data: null,
     timestamp: 0,
-    maxAge: 5 * 60 * 1000, // 5分钟缓存
-    
+    maxAge: 5 * 60 * 1000, // 5-minute cache
+
     isValid() {
       return this.data && (Date.now() - this.timestamp < this.maxAge);
     },
-    
+
     set(data) {
       this.data = data;
       this.timestamp = Date.now();
-      // 将数据保存到 localStorage
+      // Save data to localStorage
       localStorage.setItem('quickLinksCache', JSON.stringify({
         data: data,
         timestamp: this.timestamp
       }));
     },
-    
+
     load() {
       const cached = localStorage.getItem('quickLinksCache');
       if (cached) {
@@ -217,24 +217,24 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   };
 
-  // 2. 优化生成快速链接函数
+  // 2. Optimize generate quick links function
   async function generateQuickLinks() {
-    // 首先尝试使用缓存数据快速渲染
+    // First try to use cached data for fast rendering
     if (quickLinksCache.isValid()) {
       renderQuickLinks(quickLinksCache.data);
-      
-      
-      // 在后台更新缓存
+
+
+      // Update cache in background
       updateQuickLinksCache();
       return;
     }
-    
-    // 如果没有有效缓存，则正常加载
+
+    // If no valid cache, load normally
     const fixedShortcuts = await getFixedShortcuts();
     const fixedUrls = new Set(fixedShortcuts.map(shortcut => shortcut.url));
     const blacklist = await getBlacklist();
-    
-    // 添加搜索引擎域名到黑名单
+
+    // Add search engine domains to blacklist
     const searchEngineDomains = [
       'kimi.moonshot.cn',
       'www.doubao.com',
@@ -247,24 +247,24 @@ document.addEventListener('DOMContentLoaded', function () {
       'www.sogou.com',
       'www.so.com',
       'www.360.cn',
-      'chrome-extension://amkgcblhdallfcijnbmjahooalabjaao'  // 添加扩展自身的URL
+      'chrome-extension://amkgcblhdallfcijnbmjahooalabjaao'  // Add extension's own URL
     ];
 
-    // 将搜索引擎域名添加到黑名单
+    // Add search engine domains to blacklist
     for (const domain of searchEngineDomains) {
       if (!blacklist.includes(domain)) {
         await addToBlacklist(domain);
       }
     }
 
-    // 重新获取更新后的黑名单
+    // Re-get updated blacklist
     const updatedBlacklist = await getBlacklist();
-    
+
     const oneMonthAgo = new Date();
     oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
-    chrome.history.search({ 
-      text: '', 
+    chrome.history.search({
+      text: '',
       startTime: oneMonthAgo.getTime(),
       maxResults: 1000
     }, function (historyItems) {
@@ -272,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const uniqueDomains = new Set();
       const allShortcuts = [];
 
-      // 首先添加固定的快捷方式
+      // First add fixed shortcuts
       fixedShortcuts.forEach(shortcut => {
         const domain = new URL(shortcut.url).hostname;
         if (!updatedBlacklist.includes(domain)) {
@@ -281,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       });
 
-      // 然后添加历史记录中的项目
+      // Then add items from history records
       for (const item of sortedHistory) {
         const domain = new URL(item.url).hostname;
         if (!fixedUrls.has(item.url) && !uniqueDomains.has(domain) && allShortcuts.length < MAX_DISPLAY && !updatedBlacklist.includes(domain)) {
@@ -296,24 +296,24 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       renderQuickLinks(allShortcuts);
-      
+
     });
   }
 
-  // 3. 添加后台更新缓存的函数
+  // 3. Add background cache update function
   async function updateQuickLinksCache() {
     const fixedShortcuts = await getFixedShortcuts();
     const fixedUrls = new Set(fixedShortcuts.map(shortcut => shortcut.url));
     const blacklist = await getBlacklist();
-    
-    // 重新获取更新后的黑名单
+
+    // Re-get updated blacklist
     const updatedBlacklist = await getBlacklist();
-    
+
     const oneMonthAgo = new Date();
     oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
-    chrome.history.search({ 
-      text: '', 
+    chrome.history.search({
+      text: '',
       startTime: oneMonthAgo.getTime(),
       maxResults: 1000
     }, function (historyItems) {
@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const uniqueDomains = new Set();
       const allShortcuts = [];
 
-      // 首先添加固定的快捷方式
+      // First add fixed shortcuts
       fixedShortcuts.forEach(shortcut => {
         const domain = new URL(shortcut.url).hostname;
         if (!updatedBlacklist.includes(domain)) {
@@ -330,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       });
 
-      // 然后添加历史记录中的项目
+      // Then add items from history records
       for (const item of sortedHistory) {
         const domain = new URL(item.url).hostname;
         if (!fixedUrls.has(item.url) && !uniqueDomains.has(domain) && allShortcuts.length < MAX_DISPLAY && !updatedBlacklist.includes(domain)) {
@@ -344,19 +344,19 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       }
 
-      // 更新缓存
+      // Update cache
       quickLinksCache.set(allShortcuts);
     });
   }
 
-  // 3. 优化渲染函数，使用 DocumentFragment 减少重排
+  // 3. Optimize rendering function, use DocumentFragment to reduce reflow
   function renderQuickLinks(shortcuts) {
     const quickLinksContainer = document.getElementById('quick-links');
     const fragment = document.createDocumentFragment();
-    
+
     quickLinksContainer.innerHTML = '';
 
-    // 渲染实际的快捷链接
+    // Render actual quick links
     shortcuts.forEach((site) => {
       const linkItem = document.createElement('div');
       linkItem.className = 'quick-link-item-container';
@@ -365,13 +365,13 @@ document.addEventListener('DOMContentLoaded', function () {
       const link = document.createElement('a');
       link.href = site.url;
       link.className = 'quick-link-item';
-      
-      // 修改点击事件处理
-      link.addEventListener('click', async function(event) {
+
+      // Modify click event handling
+      link.addEventListener('click', async function (event) {
         event.preventDefault();
-        
+
         try {
-          // 通过页面文件名判断环境
+          // Detect environment by page filename
           const isSidePanel = window.location.pathname.endsWith('sidepanel.html');
 
           console.log('[Quick Link Click] Starting...', {
@@ -382,49 +382,49 @@ document.addEventListener('DOMContentLoaded', function () {
 
           if (isSidePanel) {
             console.log('[Quick Link Click] Opening in Side Panel mode');
-            // 获取侧边栏模式下的链接打开方式设置
+            // Get link opening settings in side panel mode
             chrome.storage.sync.get(['sidepanelOpenInNewTab', 'sidepanelOpenInSidepanel'], (result) => {
-              // 默认在新标签页中打开
+              // Open in new tab by default
               const openInNewTab = result.sidepanelOpenInNewTab !== false;
               const openInSidepanel = result.sidepanelOpenInSidepanel === true;
-              
+
               console.log('[Quick Link Click] Side Panel settings:', {
                 openInNewTab: openInNewTab,
                 openInSidepanel: openInSidepanel
               });
-              
+
               if (openInSidepanel) {
-                // 在侧边栏内打开链接
+                // Open link within side panel
                 console.log('[Quick Link Click] Opening in Side Panel iframe');
-                // 使用 SidePanelManager 加载 URL
+                // Try using SidePanelManager to load URL
                 try {
-                  // 检查 SidePanelManager 是否已定义
+                  // Check if SidePanelManager is defined
                   if (typeof SidePanelManager === 'undefined') {
-                    // 如果未定义，则创建一个简单的加载函数
+                    // If undefined, create a simple loading function
                     console.log('[Quick Link Click] SidePanelManager not defined, using fallback method');
                     const sidePanelContent = document.getElementById('side-panel-content');
                     const sidePanelIframe = document.getElementById('side-panel-iframe');
-                    
+
                     if (sidePanelContent && sidePanelIframe) {
                       sidePanelContent.style.display = 'block';
                       sidePanelIframe.src = site.url;
-                      
-                      // 添加返回按钮
+
+                      // Add back button
                       let backButton = document.querySelector('.back-to-links');
                       if (!backButton) {
                         backButton = document.createElement('div');
                         backButton.className = 'back-to-links';
                         backButton.innerHTML = '<span class="material-icons">arrow_back</span>';
                         document.body.appendChild(backButton);
-                        
-                        // 添加点击事件
+
+                        // Add click event
                         backButton.addEventListener('click', () => {
                           sidePanelContent.style.display = 'none';
                           backButton.style.display = 'none';
                         });
                       }
-                      
-                      // 显示返回按钮
+
+                      // Show back button
                       backButton.style.display = 'flex';
                     } else {
                       console.error('[Quick Link Click] Side panel elements not found, falling back to new tab');
@@ -436,20 +436,20 @@ document.addEventListener('DOMContentLoaded', function () {
                   } else if (window.sidePanelManager) {
                     window.sidePanelManager.loadUrl(site.url);
                   } else {
-                    // 如果 SidePanelManager 已定义但实例不存在，创建一个新实例
+                    // If SidePanelManager is defined but instance doesn't exist, create a new instance
                     window.sidePanelManager = new SidePanelManager();
                     window.sidePanelManager.loadUrl(site.url);
                   }
                 } catch (error) {
                   console.error('[Quick Link Click] Error using SidePanelManager:', error);
-                  // 出错时回退到在新标签页中打开
+                  // Fallback to opening in new tab on error
                   chrome.tabs.create({
                     url: site.url,
                     active: true
                   });
                 }
               } else if (openInNewTab) {
-                // 在新标签页中打开
+                // Open in new tab
                 chrome.tabs.create({
                   url: site.url,
                   active: true
@@ -462,7 +462,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
           } else {
             console.log('[Quick Link Click] Opening in Main Window mode');
-            // 在主页面中根据设置决定打开方式
+            // Decide opening method based on settings in main page
             chrome.storage.sync.get(['openInNewTab'], (result) => {
               console.log('[Quick Link Click] Settings check:', {
                 openInNewTab: result.openInNewTab
@@ -482,7 +482,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const img = document.createElement('img');
       img.src = site.favicon;
       img.alt = `${site.name} Favicon`;
-      img.loading = 'lazy'; // 添加图片懒加载
+      img.loading = 'lazy'; // Add image lazy loading
       img.addEventListener('error', function () {
         this.src = '../images/placeholder-icon.svg';
       });
@@ -503,37 +503,37 @@ document.addEventListener('DOMContentLoaded', function () {
       fragment.appendChild(linkItem);
     });
 
-    // 智能添加占位符
-    const placeholdersNeeded = Math.min(0, 10 - shortcuts.length); // 最多显示3个占位符
+    // Intelligently add placeholders
+    const placeholdersNeeded = Math.max(0, 10 - shortcuts.length);
     if (shortcuts.length < 10) {
-        for (let i = 0; i < placeholdersNeeded; i++) {
-            const placeholder = document.createElement('div');
-            placeholder.className = 'quick-link-placeholder';
-            
-            // 添加提示文本（可选）
-            if (i === 0 && shortcuts.length === 0) {
-                const hint = document.createElement('span');
-                hint.className = 'placeholder-hint';
-                hint.textContent = '访问网站将自动添加到这里';
-                placeholder.appendChild(hint);
-            }
-            
-            fragment.appendChild(placeholder);
+      for (let i = 0; i < placeholdersNeeded; i++) {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'quick-link-placeholder';
+
+        // Add hint text (optional)
+        if (i === 0 && shortcuts.length === 0) {
+          const hint = document.createElement('span');
+          hint.className = 'placeholder-hint';
+          hint.textContent = 'Visited websites will be automatically added here';
+          placeholder.appendChild(hint);
         }
+
+        fragment.appendChild(placeholder);
+      }
     }
 
     quickLinksContainer.appendChild(fragment);
-   
+
   }
 
-  // 显示上下文菜单
+  // Show context menu
   function showContextMenu(e, site) {
     console.log('=== Quick Link Context Menu ===');
     console.log('Event:', e.type);
     console.log('Site:', site);
-    
+
     e.preventDefault();
-    // 移除任何已存在的上下文菜单
+    // Remove any existing context menus
     const existingMenu = document.querySelector('.custom-context-menu');
     if (existingMenu) {
       console.log('Removing existing context menu');
@@ -547,7 +547,7 @@ document.addEventListener('DOMContentLoaded', function () {
     contextMenu.style.left = `${e.clientX}px`;
     contextMenu.style.top = `${e.clientY}px`;
 
-    // 定义菜单项
+    // Define menu items
     const menuItems = [
       { text: chrome.i18n.getMessage("openInNewTab"), icon: 'open_in_new', action: () => window.open(site.url, '_blank') },
       { text: chrome.i18n.getMessage("openInNewWindow"), icon: 'launch', action: () => window.open(site.url, '_blank', 'noopener,noreferrer') },
@@ -561,11 +561,11 @@ document.addEventListener('DOMContentLoaded', function () {
     menuItems.forEach((item, index) => {
       const menuItem = document.createElement('div');
       menuItem.className = 'custom-context-menu-item';
-      
+
       const icon = document.createElement('span');
       icon.className = 'material-icons';
       icon.innerHTML = ICONS[item.icon];
-      
+
       const text = document.createElement('span');
       text.textContent = item.text;
 
@@ -588,7 +588,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.body.appendChild(contextMenu);
 
-    // 确保菜单不会超出视窗
+    // Ensure menu doesn't exceed viewport
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
     const menuRect = contextMenu.getBoundingClientRect();
@@ -601,7 +601,7 @@ document.addEventListener('DOMContentLoaded', function () {
       contextMenu.style.top = `${viewportHeight - menuRect.height}px`;
     }
 
-    // 点击其他地方闭菜单
+    // Click elsewhere to close menu
     function closeMenu(e) {
       if (!contextMenu.contains(e.target)) {
         contextMenu.remove();
@@ -609,13 +609,13 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
 
-    // 使用 setTimeout 来确保这个监听器不会立即触发
+    // Use setTimeout to ensure this listener doesn't trigger immediately
     setTimeout(() => {
       document.addEventListener('click', closeMenu);
     }, 0);
   }
 
-  // 编辑快捷链接
+  // Edit quick link
   function editQuickLink(site) {
     const editDialog = document.getElementById('edit-dialog');
     const editNameInput = document.getElementById('edit-name');
@@ -629,7 +629,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     editDialog.style.display = 'block';
 
-    document.getElementById('edit-form').onsubmit = function(event) {
+    document.getElementById('edit-form').onsubmit = function (event) {
       event.preventDefault();
       const newName = editNameInput.value.trim();
       const newUrl = editUrlInput.value.trim();
@@ -647,16 +647,16 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     };
 
-    document.querySelector('.cancel-button').onclick = function() {
+    document.querySelector('.cancel-button').onclick = function () {
       editDialog.style.display = 'none';
     };
 
-    document.querySelector('.close-button').onclick = function() {
+    document.querySelector('.close-button').onclick = function () {
       editDialog.style.display = 'none';
     };
   }
 
-  // 刷新单个快捷链接
+  // Refresh single quick link
   function refreshQuickLink(site, oldUrl) {
     const linkItem = document.querySelector(`.quick-link-item-container[data-url="${oldUrl}"]`);
     if (linkItem) {
@@ -665,20 +665,20 @@ document.addEventListener('DOMContentLoaded', function () {
       const span = linkItem.querySelector('span');
 
       link.href = site.url;
-      
-      // 更新 favicon
+
+      // Update favicon
       const newFaviconUrl = faviconURL(site.url);
       img.src = newFaviconUrl;
       img.alt = `${site.name} Favicon`;
-      
-      // 添加错误处理，如果新的 favicon 加载失败，使用默认图标
-      img.onerror = function() {
+
+      // Add error handling, use default icon if new favicon fails to load
+      img.onerror = function () {
         this.src = '../images/placeholder-icon.svg';
       };
 
       span.textContent = site.name;
 
-      // 更新 data-url 属性
+      // Update data-url attribute
       linkItem.dataset.url = site.url;
     } else {
       console.error('Quick link element not found for:', oldUrl);
@@ -686,46 +686,46 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // 确认添加到黑名单
+  // Confirm adding to blacklist
   function addToBlacklistConfirm(site) {
     console.log('=== Quick Link Delete Confirmation ===');
     console.log('Quick link to delete:', site);
-    
+
     const confirmDialog = document.getElementById('confirm-dialog');
     const confirmMessage = document.getElementById('confirm-dialog-message');
     const confirmDeleteQuickLinkMessage = document.getElementById('confirm-delete-quick-link-message');
-    
-    // 保存要删除的快捷链接
+
+    // Save quick link to delete
     quickLinkToDelete = site;
     console.log('Set quickLinkToDelete:', quickLinkToDelete);
-    
-    // 确保两个消息元素都正确显示
+
+    // Ensure both message elements are correctly displayed
     if (confirmMessage) {
-      confirmMessage.style.display = 'none'; // 隐藏默认的确认消息
+      confirmMessage.style.display = 'none'; // Hide default confirmation message
     }
-    
+
     if (confirmDeleteQuickLinkMessage) {
-      confirmDeleteQuickLinkMessage.style.display = 'block'; // 显示快捷链接的确认消息
+      confirmDeleteQuickLinkMessage.style.display = 'block'; // Show quick link confirmation message
       confirmDeleteQuickLinkMessage.innerHTML = chrome.i18n.getMessage(
-        "confirmDeleteQuickLinkMessage", 
+        "confirmDeleteQuickLinkMessage",
         `<strong>${site.name}</strong>`
       );
       console.log('Setting quick link delete message:', confirmDeleteQuickLinkMessage.innerHTML);
     } else {
       console.error('Quick link delete message element not found');
     }
-    
+
     confirmDialog.style.display = 'block';
-    
-    // 修改确认按钮处理程序
-    document.getElementById('confirm-delete-button').onclick = function() {
+
+    // Modify confirm button handler
+    document.getElementById('confirm-delete-button').onclick = function () {
       console.log('=== Quick Link Delete Confirmed ===');
       console.log('Current quickLinkToDelete:', quickLinkToDelete);
-      
+
       if (quickLinkToDelete) {
         const domain = new URL(quickLinkToDelete.url).hostname;
         console.log('Deleting domain:', domain);
-        
+
         addToBlacklist(domain).then((added) => {
           console.log('Domain added to blacklist:', added);
           if (added) {
@@ -738,11 +738,11 @@ document.addEventListener('DOMContentLoaded', function () {
               });
             }
             generateQuickLinks();
-            // 使用 chrome.i18n.getMessage 显示删除成功提示
+            // Show delete success tip using chrome.i18n.getMessage
             showToast(chrome.i18n.getMessage('deleteSuccess'));
           }
           confirmDialog.style.display = 'none';
-          // 重置消息显示状态
+          // Reset message display state
           if (confirmMessage) confirmMessage.style.display = 'block';
           if (confirmDeleteQuickLinkMessage) confirmDeleteQuickLinkMessage.style.display = 'none';
           console.log('Clearing quickLinkToDelete state');
@@ -752,53 +752,53 @@ document.addEventListener('DOMContentLoaded', function () {
         console.error('No quick link selected for deletion');
       }
     };
-    
-    // 修改取消按钮处理程序
-    document.getElementById('cancel-delete-button').onclick = function() {
+
+    // Modify cancel button handler
+    document.getElementById('cancel-delete-button').onclick = function () {
       console.log('=== Quick Link Delete Cancelled ===');
       console.log('Clearing quickLinkToDelete:', quickLinkToDelete);
       confirmDialog.style.display = 'none';
-      // 重置消息显示状态
+      // Reset message display state
       if (confirmMessage) confirmMessage.style.display = 'block';
       if (confirmDeleteQuickLinkMessage) confirmDeleteQuickLinkMessage.style.display = 'none';
       quickLinkToDelete = null;
     };
   }
 
-  // 在无痕窗口中打开链接
+  // Open link in incognito window
   function openInIncognito(url) {
     chrome.windows.create({ url: url, incognito: true });
   }
 
-  // 复制链接到剪贴板
+  // Copy link to clipboard
   function copyToClipboard(url) {
     try {
       navigator.clipboard.writeText(url).then(() => {
-        // 使用本地化消息
+        // Use localized message
         showToast(chrome.i18n.getMessage("linkCopied"));
       }).catch(() => {
-        // 使用本地化消息
+        // Use localized message
         showToast(chrome.i18n.getMessage("copyLinkFailed"));
       });
     } catch (err) {
       console.error('Copy failed:', err);
-      // 使用本地化消息
+      // Use localized message
       showToast(chrome.i18n.getMessage("copyLinkFailed"));
     }
   }
-  // 显示 toast 提示
+  // Show toast notification
   function showToast(message) {
     const toast = document.getElementById('toast');
     toast.textContent = message;
     toast.style.display = 'block';
     setTimeout(() => {
       toast.style.display = 'none';
-    }, 3000); // 显示3秒钟
+    }, 3000); // Show for 3 seconds
   }
 
-  // 创建二维码的函数
+  // Function to create QR code
   function createQRCode(url, bookmarkName) {
-    // 创建一个模态来显示二维码
+    // Create a modal to display the QR code
     const modal = document.createElement('div');
     modal.style.position = 'fixed';
     modal.style.left = '0';
@@ -821,7 +821,7 @@ document.addEventListener('DOMContentLoaded', function () {
     qrContainer.style.alignItems = 'center';
     qrContainer.style.position = 'relative';
 
-    // 添加关闭按钮
+    // Add close button
     const closeButton = document.createElement('span');
     closeButton.textContent = '×';
     closeButton.style.position = 'absolute';
@@ -832,7 +832,7 @@ document.addEventListener('DOMContentLoaded', function () {
     closeButton.onclick = () => document.body.removeChild(modal);
     qrContainer.appendChild(closeButton);
 
-    // 添加标题
+    // Add title
     const title = document.createElement('h2');
     title.textContent = getLocalizedMessage('scanQRCode');
     title.style.marginBottom = '20px';
@@ -840,11 +840,11 @@ document.addEventListener('DOMContentLoaded', function () {
     title.style.fontSize = '0.875rem';
     qrContainer.appendChild(title);
 
-    // 创建 QR 码容器
+    // Create QR code container
     const qrCodeElement = document.createElement('div');
     qrContainer.appendChild(qrCodeElement);
 
-    // 添加 URL 显示
+    // Add URL display
     const urlDisplay = document.createElement('div');
     urlDisplay.textContent = url;
     urlDisplay.style.marginTop = '20px';
@@ -853,14 +853,14 @@ document.addEventListener('DOMContentLoaded', function () {
     urlDisplay.style.textAlign = 'center';
     qrContainer.appendChild(urlDisplay);
 
-    // 添加按钮容器
+    // Add button container
     const buttonContainer = document.createElement('div');
     buttonContainer.style.display = 'flex';
     buttonContainer.style.justifyContent = 'space-between';
     buttonContainer.style.width = '100%';
     buttonContainer.style.marginTop = '20px';
 
-    // 添加复制按钮
+    // Add copy button
     const copyButton = document.createElement('button');
     copyButton.textContent = getLocalizedMessage('copyLink');
     copyButton.onclick = () => {
@@ -870,7 +870,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     };
 
-    // 添加下载按钮
+    // Add download button
     const downloadButton = document.createElement('button');
     downloadButton.textContent = getLocalizedMessage('download');
     downloadButton.onclick = () => {
@@ -878,7 +878,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const canvas = qrCodeElement.querySelector('canvas');
         if (canvas) {
           const link = document.createElement('a');
-          // 使用书签名称作为文件名，添加 .png 扩展名
+          // Use bookmark name as file name, add .png extension
           const fileName = `${bookmarkName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_qrcode.png`;
           link.download = fileName;
           link.href = canvas.toDataURL('image/png');
@@ -889,7 +889,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }, 100);
     };
 
-    // 设置按钮样式和hover效果
+    // Set button style and hover effect
     [copyButton, downloadButton].forEach(button => {
       button.style.padding = '5px 10px';
       button.style.border = 'none';
@@ -899,7 +899,7 @@ document.addEventListener('DOMContentLoaded', function () {
       button.style.color = '#333';
       button.style.transition = 'all 0.3s ease';
 
-      // 添加hover效果
+      // Add hover effect
       button.addEventListener('mouseenter', () => {
         button.style.backgroundColor = '#e0e0e0';
         button.style.color = '#111827';
@@ -917,14 +917,14 @@ document.addEventListener('DOMContentLoaded', function () {
     modal.appendChild(qrContainer);
     document.body.appendChild(modal);
 
-    // 使用 qrcode.js 库生成二维码
+    // Use qrcode.js library to generate QR code
     new QRCode(qrCodeElement, {
       text: url,
       width: 200,
       height: 200
     });
 
-    // 点击模态框外部关闭
+    // Click outside modal to close
     modal.addEventListener('click', function (event) {
       if (event.target === modal) {
         document.body.removeChild(modal);
@@ -932,7 +932,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // 获取黑名单
+  // Get blacklist
   function getBlacklist() {
     return new Promise((resolve) => {
       chrome.storage.sync.get('blacklist', (result) => {
@@ -941,7 +941,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // 添加到黑名单
+  // Add to blacklist
   function addToBlacklist(domain) {
     return new Promise((resolve) => {
       chrome.storage.sync.get('blacklist', (result) => {
@@ -958,22 +958,22 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // 初始化
+  // Initialize
   generateQuickLinks();
 
-  // 加载缓存
+  // Load cache
   quickLinksCache.load();
 
-  // 定义主页路径模式
+  // Define main page path patterns
   const MAIN_PAGE_PATTERNS = {
     paths: ['/', '', '/home', '/index', '/main', '/welcome', '/start', '/default', '/dashboard', '/portal', '/explore'],
-    // 添加常见的主页查询参数模式
+    // Add common main page query param patterns
     queryParams: ['home=true', 'page=home', 'view=home'],
-    // 添加常见的主页语言变体
+    // Add common main page language variants
     localizedPaths: ['/zh', '/en', '/zh-CN', '/zh-TW', '/en-US']
   };
 
-  // 优化判断主页的逻辑
+  // Optimize judge main page logic
   function isMainPageUrl(path, query) {
     // 1. 检查基本路径
     if (MAIN_PAGE_PATTERNS.paths.includes(path)) {
@@ -990,7 +990,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return true;
     }
 
-    // 4. 检查路径深度（通常主页路径层级较浅）
+    // 4. Check path depth (usually home path layers are shallow)
     const pathSegments = path.split('/').filter(Boolean);
     if (pathSegments.length === 1 && pathSegments[0].toLowerCase().includes('home')) {
       return true;
@@ -999,26 +999,26 @@ document.addEventListener('DOMContentLoaded', function () {
     return false;
   }
 
-  // 更新域名信息的逻辑
+  // Update domain info logic
   function updateDomainPageInfo(domainInfo, item) {
     const url = new URL(item.url);
     const path = url.pathname;
     const query = url.search;
 
-    // 判断是否为主页
+    // Judge if it's the main page
     if (isMainPageUrl(path, query)) {
-      // 如果是主页，且比现有主页更新或尚未设置主页
+      // If it's the main page, and newer than existing home or not set yet
       if (!domainInfo.mainPage || item.lastVisitTime > domainInfo.mainPage.lastVisitTime) {
         domainInfo.mainPage = item;
       }
     } else {
-      // 如果不是主页，更新最近访问的子页面
+      // If not main page, update last visited sub page
       if (!domainInfo.lastSubPage || item.lastVisitTime > domainInfo.lastSubPage.lastVisitTime) {
-        // 存储访问频率较高的子页面
+        // Store sub pages with high visit frequency
         if (!domainInfo.subPages) {
           domainInfo.subPages = new Map();
         }
-        
+
         const existingSubPage = domainInfo.subPages.get(path);
         if (existingSubPage) {
           existingSubPage.visitCount++;
@@ -1038,16 +1038,16 @@ document.addEventListener('DOMContentLoaded', function () {
     return domainInfo;
   }
 
-  // 添加返回按钮相关函数
+  // Add back button related functions
   function showBackButton() {
     let backButton = document.querySelector('.back-to-links');
     if (!backButton) {
       backButton = document.createElement('button');
       backButton.className = 'back-to-links';
       backButton.innerHTML = '<span class="material-icons">arrow_back</span>';
-      backButton.title = '返回快捷链接';
+      backButton.title = 'Back to Quick Links';
       document.querySelector('main').appendChild(backButton);
-      
+
       backButton.addEventListener('click', () => {
         const iframe = document.querySelector('.quick-link-iframe');
         if (iframe) {

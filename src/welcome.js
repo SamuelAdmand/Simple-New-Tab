@@ -15,13 +15,13 @@ const WelcomeManager = {
             if (welcomeElement) {
                 // 立即设置显示状态，避免闪烁
                 welcomeElement.style.display = result.showWelcomeMessage !== false ? '' : 'none';
-                
+
                 // 只有在需要显示时才更新内容
                 if (result.showWelcomeMessage !== false) {
                     this.updateWelcomeMessage(false); // 传入false表示不再检查显示状态
                 }
             }
-            
+
             // 继续其他初始化
             this.initializeColorCache();
             this.setupEventListeners();
@@ -34,7 +34,7 @@ const WelcomeManager = {
         const now = new Date();
         const hours = now.getHours();
         let greeting;
-        
+
         if (hours < 12) {
             greeting = window.getLocalizedMessage('morningGreeting');
         } else if (hours < 18) {
@@ -47,25 +47,25 @@ const WelcomeManager = {
         const welcomeElement = document.getElementById('welcome-message');
         if (welcomeElement) {
             welcomeElement.textContent = welcomeMessage;
-            
-            // 只有在需要时才检查显示状态
+
+            // Only check display status when needed
             if (checkVisibility) {
                 chrome.storage.sync.get(['showWelcomeMessage'], (result) => {
                     welcomeElement.style.display = result.showWelcomeMessage !== false ? '' : 'none';
                 });
             }
-            
+
             this.adjustTextColor(welcomeElement);
         }
     },
 
-    // 初始化颜色缓存
+    // Initialize color cache
     initializeColorCache() {
         const computedStyle = window.getComputedStyle(document.documentElement);
         const backgroundColor = computedStyle.backgroundColor;
         const backgroundImage = document.body.style.backgroundImage;
-        
-        // 计算初始文字颜色
+
+        // Calculate initial text color
         if (backgroundColor && backgroundColor !== 'rgba(0, 0, 0, 0)' && backgroundColor !== 'transparent') {
             const rgb = backgroundColor.match(/\d+/g);
             if (rgb && rgb.length >= 3) {
@@ -73,35 +73,35 @@ const WelcomeManager = {
                 this.colorCache.lastTextColor = brightness > 128 ? 'rgba(51, 51, 51, 0.9)' : 'rgba(255, 255, 255, 0.9)';
             }
         }
-        
+
         this.colorCache.lastBackground = backgroundImage !== 'none' ? backgroundImage : backgroundColor;
-        
-        // 应用初始颜色
+
+        // Apply initial color
         const welcomeElement = document.getElementById('welcome-message');
         if (welcomeElement) {
             welcomeElement.style.color = this.colorCache.lastTextColor || 'rgba(51, 51, 51, 0.9)';
         }
     },
 
-    // 调整文字颜色
+    // Adjust text color
     adjustTextColor(element) {
         const computedStyle = window.getComputedStyle(document.documentElement);
         const backgroundColor = computedStyle.backgroundColor;
         const backgroundImage = document.body.style.backgroundImage;
         const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
-        
-        // 处理纯色背景的情况
+
+        // Handle solid color background cases
         if (!backgroundImage || backgroundImage === 'none') {
-            // 如果是暗色模式，直接使用亮色文本
+            // If in dark mode, directly use light text
             if (isDarkMode) {
                 element.style.color = 'rgba(255, 255, 255, 0.9)';
                 this.colorCache.lastTextColor = 'rgba(255, 255, 255, 0.9)';
                 return;
             }
-            
-            // 亮色模式下，根据背景色计算文字颜色
-            let textColor = 'rgba(51, 51, 51, 0.9)'; // 默认深色文本
-            
+
+            // In light mode, calculate text color based on background color
+            let textColor = 'rgba(51, 51, 51, 0.9)'; // Default dark text
+
             if (backgroundColor && backgroundColor !== 'rgba(0, 0, 0, 0)' && backgroundColor !== 'transparent') {
                 const rgb = backgroundColor.match(/\d+/g);
                 if (rgb && rgb.length >= 3) {
@@ -109,37 +109,37 @@ const WelcomeManager = {
                     textColor = brightness > 128 ? 'rgba(51, 51, 51, 0.9)' : 'rgba(255, 255, 255, 0.9)';
                 }
             }
-            
+
             this.colorCache.lastTextColor = textColor;
             element.style.color = textColor;
             return;
         }
 
-        // 处理壁纸背景的情况
+        // Handle wallpaper background cases
         if (backgroundImage && backgroundImage !== 'none') {
-            // 先检查缓存
+            // First check cache
             if (this.colorCache.lastBackground === backgroundImage && this.colorCache.lastTextColor) {
                 element.style.color = this.colorCache.lastTextColor;
-                // 如果有缓存，仍然进行新的计算，但不设置临时的白色文本
+                // If cached, still perform new calculation, but do not set temporary white text
             } else {
-                // 只有在没有缓存时才设置临时的白色文本
+                // Only set temporary white text if not cached
                 element.style.color = 'rgba(255, 255, 255, 0.9)';
             }
-            
-            // 进行新的计算...
+
+            // Perform new calculation...
             const img = new Image();
             img.crossOrigin = "Anonymous";
             img.src = backgroundImage.slice(5, -2);
-            
+
             img.onload = () => {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
                 const sampleSize = 50;
 
-                // 获取欢迎文字元素的位置和尺寸
+                // Get the position and size of the welcome text element
                 const elementRect = element.getBoundingClientRect();
-                
-                // 计算采样区域
+
+                // Calculate sampling area
                 const sampleArea = {
                     x: Math.max(0, elementRect.x),
                     y: Math.max(0, elementRect.y),
@@ -147,21 +147,21 @@ const WelcomeManager = {
                     height: Math.min(elementRect.height, window.innerHeight)
                 };
 
-                // 设置画布尺寸
+                // Set canvas dimensions
                 canvas.width = sampleSize;
                 canvas.height = sampleSize;
 
-                // 计算图片在背景中的实际尺寸和位置
+                // Calculate the actual size and position of the image in the background
                 const backgroundSize = getComputedStyle(document.body).backgroundSize;
                 const backgroundPosition = getComputedStyle(document.body).backgroundPosition;
-                
-                // 计算图片的缩放比例
+
+                // Calculate image scaling ratio
                 const scale = {
                     x: img.width / window.innerWidth,
                     y: img.height / window.innerHeight
                 };
 
-                // 根据背景属性计算实际的采样区域
+                // Calculate the actual sampling area based on background properties
                 const sourceArea = {
                     x: (sampleArea.x * scale.x),
                     y: (sampleArea.y * scale.y),
@@ -169,11 +169,11 @@ const WelcomeManager = {
                     height: (sampleArea.height * scale.y)
                 };
 
-                // 绘制采样区域到画布
+                // Draw sampling area to canvas
                 ctx.drawImage(
                     img,
-                    sourceArea.x, sourceArea.y, sourceArea.width, sourceArea.height,  // 源图像区域
-                    0, 0, sampleSize, sampleSize  // 目标画布区域
+                    sourceArea.x, sourceArea.y, sourceArea.width, sourceArea.height,  // Source image area
+                    0, 0, sampleSize, sampleSize  // Target canvas area
                 );
 
                 try {
@@ -182,7 +182,7 @@ const WelcomeManager = {
                     let r = 0, g = 0, b = 0;
                     let count = 0;
 
-                    // 计算采样区域的平均颜色
+                    // Calculate the average color of the sampling area
                     for (let x = 0, len = data.length; x < len; x += 4) {
                         r += data[x];
                         g += data[x + 1];
@@ -197,21 +197,21 @@ const WelcomeManager = {
                     const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
                     console.log('[WelcomeManager] Sampled area color:', {
                         area: sampleArea,
-                        color: {r, g, b},
+                        color: { r, g, b },
                         brightness
                     });
 
-                    const textColor = brightness > 128 ? 
-                        'rgba(51, 51, 51, 0.9)' : 
+                    const textColor = brightness > 128 ?
+                        'rgba(51, 51, 51, 0.9)' :
                         'rgba(255, 255, 255, 0.9)';
-                    
-                    // 更新缓存和应用颜色
+
+                    // Update cache and apply color
                     this.colorCache.lastBackground = backgroundImage;
                     this.colorCache.lastTextColor = textColor;
                     element.style.color = textColor;
                     element.style.transition = 'color 0.3s ease';
                 } catch (error) {
-                    console.error('分析背景颜色失败:', error, {
+                    console.error('Failed to analyze background color:', error, {
                         sampleArea,
                         sourceArea
                     });
@@ -220,23 +220,23 @@ const WelcomeManager = {
             };
 
             img.onerror = () => {
-                console.error('背景图片加载失败');
+                console.error('Background image failed to load');
                 if (!this.colorCache.lastTextColor) {
-                    // 只有在没有缓存颜色时才设置默认颜色
+                    // Only set default color if no cached color
                     element.style.color = 'rgba(255, 255, 255, 0.9)';
                 }
             };
 
-            // 在图片加载过程中先使用白色文本
+            // Use white text first while image is loading
             element.style.color = 'rgba(255, 255, 255, 0.9)';
             return;
         }
     },
 
-    // 设置事件监听器
+    // Set event listeners
     setupEventListeners() {
         document.getElementById('welcome-message').addEventListener('click', () => {
-            // 使用 chrome.i18n.getMessage 获取本地化的提示文本
+            // Use chrome.i18n.getMessage to get localized prompt text
             const newUserName = prompt(chrome.i18n.getMessage("namePrompt"), userName);
             if (newUserName && newUserName.trim() !== "") {
                 userName = newUserName.trim();
@@ -245,22 +245,22 @@ const WelcomeManager = {
             }
         });
 
-        // 添加对欢迎消息内容变化的监听
+        // Add listener for welcome message content changes
         const welcomeElement = document.getElementById('welcome-message');
         if (welcomeElement) {
             const observer = new MutationObserver((mutations) => {
                 mutations.forEach((mutation) => {
                     if (mutation.type === 'childList' || mutation.type === 'characterData') {
                         const currentText = welcomeElement.textContent;
-                        // 检查是否缺少用户名
-                        if (currentText && !currentText.includes(userName) && 
+                        // Check if username is missing
+                        if (currentText && !currentText.includes(userName) &&
                             (currentText.includes('早上好') || currentText.includes('下午好') || currentText.includes('晚上好'))) {
                             this.updateWelcomeMessage();
                         }
                     }
                 });
             });
-            
+
             observer.observe(welcomeElement, {
                 childList: true,
                 characterData: true,
@@ -269,7 +269,7 @@ const WelcomeManager = {
         }
     },
 
-    // 添加主题变化监听方法
+    // Add theme change listener method
     setupThemeChangeListener() {
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
@@ -289,12 +289,12 @@ const WelcomeManager = {
     }
 };
 
-// 导出给其他模块使用的方法
+// Export method for other modules
 window.WelcomeManager = WelcomeManager;
 
-// DOM加载完成后初始化
+// Initialize after DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     WelcomeManager.initialize();
-    // 每分钟更新一次欢迎消息
+    // Update welcome message every minute
     setInterval(() => WelcomeManager.updateWelcomeMessage(), 60000);
 });

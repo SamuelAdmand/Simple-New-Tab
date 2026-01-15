@@ -1,12 +1,12 @@
 import { featureTips } from './feature-tips.js';
 
-// 书签清理插件相关常量
+// Bookmark cleanup extension constants
 const CLEANUP_EXTENSION = {
   ID: 'aeehapalakdoclgmfeondmephgiandef',
   STORE_URL: 'https://chromewebstore.google.com/detail/lazycat-bookmark-cleaner/aeehapalakdoclgmfeondmephgiandef'
 };
 
-// 检查插件是否已安装
+// Check if extension is installed
 function checkExtensionInstalled() {
   return new Promise((resolve, reject) => {
     chrome.management.get(CLEANUP_EXTENSION.ID, (extensionInfo) => {
@@ -19,7 +19,7 @@ function checkExtensionInstalled() {
   });
 }
 
-// 添加从设置中打开清理工具的处理函数
+// Add handler to open cleanup tool from settings
 function initBookmarkCleanupSettings() {
   const openCleanupButton = document.getElementById('open-bookmark-cleanup');
   if (openCleanupButton) {
@@ -37,9 +37,9 @@ function initBookmarkCleanupSettings() {
   }
 }
 
-// 初始化
+// Initialize
 document.addEventListener('DOMContentLoaded', () => {
   initBookmarkCleanupSettings();
 });
 
-export {}; 
+export { }; 
