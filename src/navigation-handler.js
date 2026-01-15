@@ -370,7 +370,7 @@ function injectNavBarInIframe(history, currentIndex, url) {
   urlDisplay.className = 'url-display';
   urlDisplay.textContent = url || window.location.href.split('?')[0]; // Remove URL params
 
-  // 将元素添加到导航栏
+  // Add elements to navigation bar
   navBar.appendChild(homeButton);
   navBar.appendChild(backButton);
   navBar.appendChild(forwardButton);

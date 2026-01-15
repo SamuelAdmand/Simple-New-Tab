@@ -1,23 +1,23 @@
-// 定义全局SidePanelManager类
+// Define global SidePanelManager class
 class SidePanelManager {
   constructor() {
     this.history = [];
     this.currentIndex = -1;
     this.isNavigating = false;
-    
+
     this.init();
   }
 
   init() {
     if (!this.isSidePanel()) return;
-    
-    // 不再在初始化时直接添加导航栏
+
+    // Do not directly add navigation bar on initialization anymore
     // this.addNavigationBar();
-    
-    // 初始化事件监听
+
+    // Initialize event listeners
     this.initEventListeners();
-    
-    // 监听来自内容脚本的消息
+
+    // Listen for messages from content scripts
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       if (message.action === "navigateBack") {
         this.navigateBack();
@@ -29,24 +29,24 @@ class SidePanelManager {
         this.navigateHome();
         sendResponse({ success: true });
       } else if (message.action === "getCurrentHistory") {
-        sendResponse({ 
+        sendResponse({
           history: this.history,
           currentIndex: this.currentIndex
         });
       }
-      return true; // 保持消息通道开放以进行异步响应
+      return true; // Keep message channel open for asynchronous response
     });
   }
 
-  // 判断当前是否在侧边栏模式
+  // Check if currently in side panel mode
   isSidePanel() {
     return window.location.pathname.endsWith('sidepanel.html');
   }
 
   addNavigationBar() {
-    // 检查是否已存在导航栏，避免重复添加
+    // Check if navigation bar already exists to avoid duplicate addition
     if (document.querySelector('.side-panel-nav')) return;
-    
+
     const navBar = document.createElement('div');
     navBar.className = 'side-panel-nav';
     navBar.innerHTML = `
@@ -71,46 +71,46 @@ class SidePanelManager {
         <span class="material-icons">expand_more</span>
       </div>
     `;
-    
+
     document.body.insertBefore(navBar, document.body.firstChild);
-    
-    // 初始化导航按钮事件
+
+    // Initialize navigation button events
     document.getElementById('back-btn').addEventListener('click', () => this.goBack());
     document.getElementById('forward-btn').addEventListener('click', () => this.goForward());
     document.getElementById('refresh-btn').addEventListener('click', () => this.refresh());
     document.getElementById('open-in-tab-btn').addEventListener('click', () => this.openInNewTab());
-    
-    // URL 输入框事件
+
+    // URL Input box event
     const urlInput = document.getElementById('url-input');
     urlInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
         this.loadUrl(urlInput.value);
       }
     });
-    
-    // 添加紧凑模式切换事件
+
+    // Add compact mode toggle event
     const toggleCompact = document.querySelector('.toggle-compact-btn');
     if (toggleCompact) {
       toggleCompact.addEventListener('click', () => {
         navBar.classList.toggle('compact-mode');
         document.body.classList.toggle('nav-compact-mode');
-        // 切换图标方向
+        // Toggle icon direction
         const icon = toggleCompact.querySelector('.material-icons');
         icon.textContent = navBar.classList.contains('compact-mode') ? 'expand_less' : 'expand_more';
-        
-        // 保存用户偏好
+
+        // Save user preference
         chrome.storage.local.set({
           'sidepanel_nav_compact_mode': navBar.classList.contains('compact-mode')
         });
       });
     }
-    
-    // 从存储中恢复用户的紧凑模式偏好
+
+    // Restore user preference for compact mode from storage
     chrome.storage.local.get(['sidepanel_nav_compact_mode'], (result) => {
       if (result.sidepanel_nav_compact_mode) {
         navBar.classList.add('compact-mode');
         document.body.classList.add('nav-compact-mode');
-        // 更新图标
+        // Update icon
         const icon = toggleCompact.querySelector('.material-icons');
         if (icon) icon.textContent = 'expand_less';
       }
@@ -118,52 +118,52 @@ class SidePanelManager {
   }
 
   initEventListeners() {
-    // 监听消息
+    // Listen for messages
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       if (message.action === "updateUrl") {
         this.updateUrlBar(message.url);
         this.addToHistory(message.url);
       }
     });
-    
-    // 添加对window message事件的监听，处理来自iframe的消息
+
+    // Add listener for window message event, handling messages from iframe
     window.addEventListener('message', (event) => {
       console.log('[SidePanelManager] Received message from iframe:', event.data);
-      
+
       if (!event.data || typeof event.data !== 'object') return;
-      
+
       const { action } = event.data;
-      
+
       switch (action) {
         case 'navigateBack':
           console.log('[SidePanelManager] Processing navigateBack from iframe');
           this.navigateBack();
           break;
-          
+
         case 'navigateForward':
           console.log('[SidePanelManager] Processing navigateForward from iframe');
           this.navigateForward();
           break;
-          
+
         case 'navigateHome':
           console.log('[SidePanelManager] Processing navigateHome from iframe');
           this.navigateHome();
           break;
-          
+
         case 'openInNewTab':
           console.log('[SidePanelManager] Processing openInNewTab from iframe');
           this.openInNewTab();
           break;
-          
+
         case 'navigateToUrl':
           console.log('[SidePanelManager] Processing navigateToUrl from iframe:', event.data.url);
-          // 使用loadUrl方法加载URL并更新历史记录
+          // Use loadUrl method to load URL and update history
           this.loadUrl(event.data.url);
           break;
-          
+
         case 'updateHistory':
           console.log('[SidePanelManager] Processing updateHistory from iframe:', event.data.url);
-          // 更新历史记录但不重新加载页面
+          // Update history without reloading the page
           this.addToHistory(event.data.url);
           this.updateUrlBar(event.data.url);
           break;
@@ -171,58 +171,58 @@ class SidePanelManager {
     });
   }
 
-  // 使用chrome.sidePanel.setOptions API加载URL
+  // Load URL using chrome.sidePanel.setOptions API
   loadUrl(url) {
     if (!url.startsWith('http')) {
       url = 'https://' + url;
     }
-    
-    // 显示加载动画
+
+    // Show loading animation
     this.showLoadingSpinner();
-    
-    // 添加标记参数，表明这是在侧边栏中打开的页面
+
+    // Add marker parameter to indicate page opened in side panel
     if (!url.includes('sidepanel_view=')) {
       url = url + (url.includes('?') ? '&' : '?') + 'sidepanel_view=true';
     }
-    
+
     console.log('[SidePanelManager] Loading URL with setOptions:', url);
-    
-    // 使用消息传递给背景脚本处理
-    chrome.runtime.sendMessage({ 
-      action: 'openUrlInSidePanel', 
-      url: url 
+
+    // Send message to background script for handling
+    chrome.runtime.sendMessage({
+      action: 'openUrlInSidePanel',
+      url: url
     }, (response) => {
       if (response && response.success) {
         console.log('[SidePanelManager] Successfully opened URL in side panel');
-        // 在成功加载后隐藏加载动画
+        // Hide loading animation after successful load
         setTimeout(() => this.hideLoadingSpinner(), 500);
       } else {
         console.error('[SidePanelManager] Error opening URL in side panel:', response ? response.error : 'Unknown error');
-        // 出错时回退到iframe方式
+        // Fallback to iframe method if error occurs
         this.loadUrlWithIframe(url);
       }
     });
   }
-  
-  // 保留原来的iframe方式作为备选
+
+  // Keep original iframe method as alternative
   loadUrlWithIframe(url) {
     console.log('[SidePanelManager] Falling back to iframe mode for URL:', url);
-    
-    // 显示加载动画
+
+    // Show loading animation
     this.showLoadingSpinner();
-    
-    // 确保URL包含标记参数
+
+    // Ensure URL contains marker parameter
     if (!url.includes('sidepanel_view=')) {
       url = url + (url.includes('?') ? '&' : '?') + 'sidepanel_view=true';
     }
-    
-    // 添加导航栏，只在加载内容时添加
+
+    // Add navigation bar, only when loading content
     this.addNavigationBar();
-    
-    // 查找或创建侧边栏内容容器
+
+    // Find or create side panel content container
     let sidePanelContent = document.getElementById('side-panel-content');
     let sidePanelIframe = document.getElementById('side-panel-iframe');
-    
+
     if (!sidePanelContent) {
       console.log('[SidePanelManager] Creating side panel content container');
       sidePanelContent = document.createElement('div');
@@ -230,7 +230,7 @@ class SidePanelManager {
       sidePanelContent.className = 'side-panel-content';
       document.body.appendChild(sidePanelContent);
     }
-    
+
     if (!sidePanelIframe) {
       console.log('[SidePanelManager] Creating side panel iframe');
       sidePanelIframe = document.createElement('iframe');
@@ -238,18 +238,18 @@ class SidePanelManager {
       sidePanelIframe.className = 'side-panel-iframe';
       sidePanelContent.appendChild(sidePanelIframe);
     }
-    
-    // 显示侧边栏内容
+
+    // Show side panel content
     sidePanelContent.style.display = 'block';
-    
-    // 设置iframe的src
+
+    // Set iframe src
     sidePanelIframe.src = url;
-    
-    // 为每次加载注册一次性load事件，确保在已有iframe时也能发送历史数据
+
+    // Register one-time load event to ensure history data is sent even if iframe exists
     const loadHandler = () => {
       this.hideLoadingSpinner();
-      
-      // 向iframe发送历史记录数据，用于更新导航栏状态
+
+      // Send history data to iframe for updating navigation bar state
       try {
         sidePanelIframe.contentWindow.postMessage({
           action: 'injectNavBarInIframe',
@@ -260,63 +260,63 @@ class SidePanelManager {
       } catch (e) {
         console.error('[SidePanelManager] Error sending history data to iframe on load:', e);
       }
-      
-      // 移除事件监听器，避免重复
+
+      // Remove event listener to avoid repetition
       sidePanelIframe.removeEventListener('load', loadHandler);
     };
-    
+
     sidePanelIframe.addEventListener('load', loadHandler);
-    
-    // 添加返回按钮
+
+    // Add back button
     this.addBackButton();
-    
-    // 更新URL显示和历史记录
+
+    // Update URL bar and history
     this.updateUrlBar(url);
   }
-  
-  // 显示加载动画
+
+  // Show loading indicator
   showLoadingSpinner(position = 'top-right') {
     let loadingIndicator = document.getElementById('side-panel-loading-indicator');
-    
-    // 如果加载指示器不存在，创建一个
+
+    // If loading indicator doesn't exist, create it
     if (!loadingIndicator) {
       loadingIndicator = document.createElement('div');
       loadingIndicator.id = 'side-panel-loading-indicator';
       loadingIndicator.className = 'loading-indicator';
-      
-      // 创建简洁的加载动画
+
+      // Create simple loading spinner
       const spinner = document.createElement('div');
       spinner.className = 'loading-spinner';
       loadingIndicator.appendChild(spinner);
-      
+
       document.body.appendChild(loadingIndicator);
     }
-    
-    // 清除所有可能的位置类
+
+    // Clear all possible position classes
     loadingIndicator.classList.remove('center', 'top-center', 'bottom-right', 'nav-adjacent');
-    
-    // 添加所请求的位置类 (如果不是默认的top-right位置)
+
+    // Add requested position class (if not default top-right)
     if (position !== 'top-right') {
       loadingIndicator.classList.add(position);
     }
-    
-    // 显示加载指示器
+
+    // Show loading indicator
     loadingIndicator.style.display = 'block';
   }
-  
-  // 隐藏加载动画
+
+  // Hide loading indicator
   hideLoadingSpinner() {
     const loadingIndicator = document.getElementById('side-panel-loading-indicator');
     if (loadingIndicator) {
       loadingIndicator.style.display = 'none';
     }
   }
-  
-  // 导航回书签列表主页
+
+  // Navigate back to bookmark list home page
   navigateHome() {
     console.log('[SidePanelManager] Navigating to home page');
-    
-    // 使用Chrome侧边栏API返回到侧边栏主页
+
+    // Use Chrome side panel API to return home
     chrome.sidePanel.setOptions({
       enabled: true,
       path: 'src/sidepanel.html'
@@ -326,32 +326,32 @@ class SidePanelManager {
       console.error('[SidePanelManager] Error navigating to home page:', error);
     });
   }
-  
-  // 导航到历史记录中的上一个URL
+
+  // Navigate to previous URL in history
   navigateBack() {
     if (this.currentIndex > 0) {
       this.currentIndex--;
       const previousUrl = this.history[this.currentIndex];
       console.log('[SidePanelManager] Navigating back to:', previousUrl);
-      
-      // 标记为导航中，避免重复添加历史记录
+
+      // Mark as navigating to avoid duplicate history entry
       this.isNavigating = true;
-      
-      // 使用Chrome侧边栏API导航到上一个URL
+
+      // Use Chrome side panel API to navigate back
       chrome.sidePanel.setOptions({
         path: previousUrl
       }).then(() => {
         console.log('[SidePanelManager] Successfully navigated back');
-        
-        // 更新存储中的历史状态
+
+        // Update history state in storage
         chrome.storage.local.set({
           sidePanelNavData: {
             history: this.history,
             currentIndex: this.currentIndex
           }
         });
-        
-        // 向iframe发送消息更新导航栏状态
+
+        // Update iframe navigation bar state via message
         const iframe = document.getElementById('side-panel-iframe');
         if (iframe && iframe.contentWindow) {
           try {
@@ -370,35 +370,35 @@ class SidePanelManager {
         this.isNavigating = false;
       });
     } else {
-      console.log('[SidePanelManager] Cannot navigate back, already at oldest history entry');
+      console.log('[SidePanelManager] Cannot navigate back, already at earliest history entry');
     }
   }
-  
-  // 导航到历史记录中的下一个URL
+
+  // Navigate to next URL in history
   navigateForward() {
     if (this.currentIndex < this.history.length - 1) {
       this.currentIndex++;
       const nextUrl = this.history[this.currentIndex];
       console.log('[SidePanelManager] Navigating forward to:', nextUrl);
-      
-      // 标记为导航中，避免重复添加历史记录
+
+      // Mark as navigating to avoid duplicate history entry
       this.isNavigating = true;
-      
-      // 使用Chrome侧边栏API导航到下一个URL
+
+      // Use Chrome side panel API to navigate forward
       chrome.sidePanel.setOptions({
         path: nextUrl
       }).then(() => {
         console.log('[SidePanelManager] Successfully navigated forward');
-        
-        // 更新存储中的历史状态
+
+        // Update history state in storage
         chrome.storage.local.set({
           sidePanelNavData: {
             history: this.history,
             currentIndex: this.currentIndex
           }
         });
-        
-        // 向iframe发送消息更新导航栏状态
+
+        // Update iframe navigation bar state via message
         const iframe = document.getElementById('side-panel-iframe');
         if (iframe && iframe.contentWindow) {
           try {
@@ -417,45 +417,45 @@ class SidePanelManager {
         this.isNavigating = false;
       });
     } else {
-      console.log('[SidePanelManager] Cannot navigate forward, already at newest history entry');
+      console.log('[SidePanelManager] Cannot navigate forward, already at latest history entry');
     }
   }
 
-  // 添加返回按钮
+  // Add back button
   addBackButton() {
     let backButton = document.querySelector('.back-to-links');
-    
+
     if (!backButton) {
       backButton = document.createElement('div');
       backButton.className = 'back-to-links';
       backButton.innerHTML = '<span class="material-icons">arrow_back</span>';
       document.body.appendChild(backButton);
-      
-      // 添加点击事件
+
+      // Add click event
       backButton.addEventListener('click', () => {
         this.closeIframe();
       });
     }
-    
-    // 显示返回按钮
+
+    // Show back button
     backButton.style.display = 'flex';
   }
-  
-  // 关闭iframe
+
+  // Close iframe
   closeIframe() {
     const sidePanelContent = document.getElementById('side-panel-content');
     const backButton = document.querySelector('.back-to-links');
     const navBar = document.querySelector('.side-panel-nav');
-    
+
     if (sidePanelContent) {
       sidePanelContent.style.display = 'none';
     }
-    
+
     if (backButton) {
       backButton.style.display = 'none';
     }
-    
-    // 同时移除导航栏
+
+    // Remove navigation bar also
     if (navBar) {
       navBar.remove();
     }
@@ -494,21 +494,21 @@ class SidePanelManager {
       this.isNavigating = false;
       return;
     }
-    
+
     this.currentIndex++;
     this.history = this.history.slice(0, this.currentIndex);
     this.history.push(url);
     this.updateNavigationButtons();
-    
-    // 将历史记录保存到本地存储，供iframe中的导航栏使用
+
+    // Save history to local storage for use in iframe navigation bar
     chrome.storage.local.set({
       sidePanelNavData: {
         history: this.history,
         currentIndex: this.currentIndex
       }
     });
-    
-    // 如果有iframe，向iframe发送消息更新导航栏状态
+
+    // If iframe exists, update its navigation bar state
     const iframe = document.getElementById('side-panel-iframe');
     if (iframe && iframe.contentWindow) {
       try {
@@ -525,25 +525,25 @@ class SidePanelManager {
   }
 
   updateNavigationButtons() {
-    // 更新主界面的按钮状态
+    // Update buttons in main UI
     const backBtn = document.getElementById('back-btn');
     const forwardBtn = document.getElementById('forward-btn');
-    
+
     if (backBtn) backBtn.disabled = this.currentIndex <= 0;
     if (forwardBtn) forwardBtn.disabled = this.currentIndex >= this.history.length - 1;
-    
-    // 将历史记录状态保存到本地存储
+
+    // Save history state to local storage
     chrome.storage.local.set({
       sidePanelNavData: {
         history: this.history,
         currentIndex: this.currentIndex
       }
     }, () => {
-      console.log('[SidePanelManager] Saved navigation state to storage:', 
-                  {history: this.history, currentIndex: this.currentIndex});
+      console.log('[SidePanelManager] Saved navigation state to storage:',
+        { history: this.history, currentIndex: this.currentIndex });
     });
-    
-    // 更新iframe中的导航按钮状态
+
+    // Update navigation button status in iframe
     const iframe = document.getElementById('side-panel-iframe');
     if (iframe && iframe.contentWindow) {
       try {
@@ -564,11 +564,11 @@ class SidePanelManager {
   }
 }
 
-// 创建全局实例
+// Create global instance
 window.addEventListener('DOMContentLoaded', () => {
-  // 创建全局实例
+  // Create global instance
   window.sidePanelManager = new SidePanelManager();
-  
-  // 将SidePanelManager类暴露到全局作用域
+
+  // Expose SidePanelManager class to global scope
   window.SidePanelManager = SidePanelManager;
-}); 
+});

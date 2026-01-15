@@ -866,7 +866,7 @@ main {
     border-color: #404040;
   }
 
-  /* 继承现有的暗色模式样式 */
+  /* Inherit existing dark mode styles */
   html[data-theme="auto"] .search-input,
   html[data-theme="auto"] .search-form,
   html[data-theme="auto"] .search-suggestions {
@@ -879,9 +879,9 @@ main {
     color: #e0e0e0;
   }
 
-  /* 继承其他暗色模式样式 */
+  /* Inherit other dark mode styles */
   html[data-theme="auto"] [class*="dark-mode-style"] {
-    /* 应用对应的暗色模式样式 */
+    /* Apply corresponding dark mode styles */
   }
 }
 
@@ -895,13 +895,13 @@ main {
     color: #333333;
   }
 
-  /* 继承其他亮色模式样式 */
+  /* Inherit other light mode styles */
   html[data-theme="auto"] [class*="light-mode-style"] {
-    /* 应用对应的亮色模式样式 */
+    /* Apply corresponding light mode styles */
   }
 }
 
-/* 布局设置页面样式 */
+/* Layout settings page styles */
 .layout-settings-container {
   padding: 1.5rem;
   background: #ffffff;
@@ -984,7 +984,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   color: #10b981;
 }
 
-/* 暗色模式适配 */
+/* Dark mode adaptation */
 [data-theme="dark"] .layout-settings-container {
   background: #1f2937;
 }
@@ -1018,13 +1018,13 @@ input[type="range"]::-webkit-slider-thumb:hover {
   color: #9ca3af;
 }
 
-/* 暗色模式适配 */
+/* Dark mode adaptation */
 [data-theme="dark"] .floating-width-settings {
   background: #1f2937;
   color: #e5e7eb;
 }
 
-/* 当显示浮动卡片时移除模糊效果 */
+/* Remove blur effect when displaying floating card */
 .settings-modal-content.no-blur {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
@@ -1033,7 +1033,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   transition: opacity 0.2s ease;
 }
 
-/* 设置模态框的基础样式 */
+/* Base styles for settings modal */
 .settings-modal {
   display: none;
   position: fixed;
@@ -1049,7 +1049,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   /* transition: all 0.3s ease; */
 }
 
-/* 当滑块被拖动时，移除模糊效果 */
+/* Remove blur effect when slider is dragged */
 .settings-modal.no-blur {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
@@ -1057,20 +1057,20 @@ input[type="range"]::-webkit-slider-thumb:hover {
   transition: all 0.3s ease;
 }
 
-/* 当显示浮动卡片时的样式 */
+/* Styles when displaying floating card */
 .settings-modal-content.no-blur {
   background-color: transparent !important;
   transition: all 0.3s ease;
 }
 
-/* 当显示浮动卡片时，其他内容的样式 */
+/* Styles for other content when displaying floating card */
 .settings-modal-content.no-blur>*:not(#floating-width-settings) {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
 }
 
-/* 搜索引擎对话框暗色模式样式 */
+/* Search engine dialog dark mode styles */
 [data-theme="dark"] .modal .modal-content {
   background-color: #242424;
   border-color: #404040;
@@ -1124,7 +1124,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   color: #ffffff;
 }
 
-/* 暗色模式下的滚动条样式 */
+/* Scrollbar styles in dark mode */
 [data-theme="dark"] .modal .modal-content::-webkit-scrollbar-track {
   background: #333333;
 }
@@ -1134,13 +1134,13 @@ input[type="range"]::-webkit-slider-thumb:hover {
   border: 2px solid #333333;
 }
 
-/* 暗色模式下的加载动画样式 */
+/* Loading animation styles in dark mode */
 [data-theme="dark"] .icon-loading-spinner {
   border-color: #404040;
   border-top-color: #10b981;
 }
 
-/* 暗色模式下的复选框样式 */
+/* Checkbox styles in dark mode */
 [data-theme="dark"] .custom-checkbox input:checked+.checkmark {
   background-color: #10b981;
   border-color: #10b981;
@@ -1155,7 +1155,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   background-color: #333333;
 }
 
-/* 暗色模式下的删除按钮样式 */
+/* Delete button styles in dark mode */
 [data-theme="dark"] .delete-custom-engine {
   color: #e5e7eb;
 }
@@ -1165,17 +1165,17 @@ input[type="range"]::-webkit-slider-thumb:hover {
   background-color: rgba(239, 68, 68, 0.1);
 }
 
-/* 关闭按钮暗色模式样式 */
+/* Close button dark mode styles */
 [data-theme="dark"] .close-button.settings-modal-close {
   color: #9ca3af;
-  /* 默认颜色 */
+  /* Default color */
   background-color: #242424;
-  /* 与模态框背景色相同 */
+  /* Same as modal background color */
 }
 
 [data-theme="dark"] .close-button.settings-modal-close:hover {
   color: #e5e7eb;
-  /* 悬停时颜色变亮 */
+  /* Lighten color on hover */
 }
 
 [data-theme="dark"] .close-button.settings-modal-close:focus {
@@ -1183,13 +1183,13 @@ input[type="range"]::-webkit-slider-thumb:hover {
   outline: none;
 }
 
-/* 确保暗色模式下关闭按钮的背景色与模态框一致 */
+/* Ensure close button background matches modal in dark mode */
 [data-theme="dark"] .modal .close-button.settings-modal-close {
   background-color: #242424;
   border-color: #404040;
 }
 
-/* 搜索引擎下拉框暗色模式样式 */
+/* Search engine dropdown dark mode styles */
 [data-theme="dark"] .search-engine-dropdown {
   background-color: #242424;
   border-color: #404040;
@@ -1212,7 +1212,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   color: #e5e7eb;
 }
 
-/* 添加搜索引擎按钮的暗色模式 */
+/* Add search engine button dark mode */
 [data-theme="dark"] .add-engine {
   color: #9ca3af;
   border-color: #404040;
@@ -1225,24 +1225,24 @@ input[type="range"]::-webkit-slider-thumb:hover {
   color: #e5e7eb;
 }
 
-/* 下拉框分隔线暗色模式 */
+/* Dropdown separator dark mode */
 [data-theme="dark"] .search-engine-dropdown .divider {
   border-color: #404040;
 }
 
-/* 下拉框图标暗色模式 */
+/* Dropdown icon dark mode */
 [data-theme="dark"] .search-engine-option-icon {
   background-color: #ffffff;
   padding: 2px;
   border-radius: 4px;
 }
 
-/* 确保图标在暗色模式下有更好的可见度 */
+/* Ensure icons have better visibility in dark mode */
 [data-theme="dark"] .material-icons {
   color: #e5e7eb;
 }
 
-/* 全局滚动条样式 */
+/* Global scrollbar styles */
 .global-range-slider {
   position: fixed;
   display: none;
@@ -1259,13 +1259,13 @@ input[type="range"]::-webkit-slider-thumb:hover {
   opacity: 1;
 }
 
-/* 暗色模式下的全局滚动条样式 */
+/* Global scrollbar styles in dark mode */
 [data-theme="dark"] .global-range-slider {
   background-color: #242424;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2);
 }
 
-/* 全局滚动条样式 */
+/* Global scrollbar styles */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -1282,27 +1282,27 @@ input[type="range"]::-webkit-slider-thumb:hover {
   border: none;
   transition: background-color 0.2s;
   min-height: 60px;
-  /* 设置滚动条滑块的最小高度 */
+  /* Set minimum scrollbar thumb height */
   max-height: 120px;
-  /* 设置滚动条滑块的最大高度 */
+  /* Set maximum scrollbar thumb height */
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: rgba(156, 163, 175, 0.8);
 }
 
-/* Firefox 全局滚动条样式 */
+/* Firefox global scrollbar styles */
 * {
   scrollbar-width: thin;
   scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
 }
 
-/* 暗色模式全局滚动条样式 */
+/* Dark mode global scrollbar styles */
 [data-theme="dark"] ::-webkit-scrollbar-thumb {
   background-color: rgba(229, 231, 235, 0.2);
   min-height: 60px;
   max-height: 120px;
-  /* 确保暗色模式下也有相同的最大高度 */
+  /* Ensure same maximum height in dark mode */
 }
 
 [data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
@@ -1314,12 +1314,12 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 
-/* 主题设置区域样式 */
+/* Theme settings area styles */
 .theme-setting-section {
   margin-bottom: 20px;
 }
 
-/* 主题选择下拉菜单样式 */
+/* Theme selector dropdown menu styles */
 .theme-select {
   width: 140px;
   padding: 8px 12px;
@@ -1331,13 +1331,13 @@ input[type="range"]::-webkit-slider-thumb:hover {
   cursor: pointer;
   transition: all 0.2s;
   appearance: none;
-  /* 移除默认的下拉箭头 */
+  /* Remove default dropdown arrow */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 8px center;
-  /* 调整箭头位置 */
+  /* Adjust arrow position */
   background-size: 16px;
-  /* 调整箭头大小 */
+  /* Adjust arrow size */
 }
 
 .theme-select:hover {
@@ -1350,7 +1350,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
 }
 
-/* 暗色模式下的箭头颜色 */
+/* Arrow color in dark mode */
 [data-theme="dark"] .theme-select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23E5E7EB'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
   background-color: #404040;
@@ -1358,7 +1358,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   color: #e5e7eb;
 }
 
-/* 暗色模式适配 */
+/* Dark mode adaptation */
 [data-theme="dark"] .settings-section-title {
   color: #e5e7eb;
 }
@@ -1378,57 +1378,57 @@ input[type="range"]::-webkit-slider-thumb:hover {
   box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
 }
 
-/* 修改默认文件夹切换区域样式 */
+/* Modify default folder toggle area styles */
 .default-folders-tabs {
   position: fixed;
   top: 40%;
-  /* 垂直居中 */
+  /* Vertical center */
   transform: translateY(-50%);
-  /* 垂直居中偏移 */
+  /* Vertical center offset */
   left: 16rem;
-  /* 与侧边栏宽度对应 */
+  /* Match sidebar width */
   padding: 8px 2px;
-  /* 调整内边距 */
+  /* Adjust padding */
   display: none;
-  /* 默认隐藏 */
+  /* Hidden by default */
   flex-direction: column;
-  /* 改为垂直布局 */
+  /* Change to vertical layout */
   justify-content: center;
   z-index: 10;
   transition: left 0.3s ease;
-  /* 修改过渡效果 */
+  /* Modify transition effect */
   background: rgba(255, 255, 255, 0.9);
-  /* 添加半透明背景 */
+  /* Add semi-transparent background */
   border-radius: 0 12px 12px 0;
-  /* 右侧圆角 */
+  /* Right side border radius */
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.06),
     0 2px 4px -2px rgb(0 0 0 / 0.06);
-  /* 添加阴影 */
+  /* Add shadow */
 }
 
-/* 显示类 */
+/* Display class */
 .default-folders-tabs.show {
   display: flex;
 }
 
-/* 当侧边栏收起时调整位置 */
+/* Adjust position when sidebar is collapsed */
 body .default-folders-tabs.sidebar-collapsed {
   left: 0;
   border-radius: 0px 12px 12px 0px;
-  /* 右侧圆角 */
+  /* Right side border radius */
 }
 
-/* 当侧边栏收起时调整位置 */
+/* Adjust position when sidebar is collapsed */
 body .default-folders-tabs.sidebar-expanded {
   display: none;
-  /* 右侧圆角 */
+  /* Right side border radius */
 }
 
-/* 优化 tabs-container 样式 */
+/* Optimize tabs-container styles */
 .tabs-container {
   display: flex;
   flex-direction: column;
-  /* 改为垂直布局 */
+  /* Change to vertical layout */
   gap: 12px;
   justify-content: center;
   align-items: center;
@@ -1436,12 +1436,12 @@ body .default-folders-tabs.sidebar-expanded {
   border-radius: 12px;
 }
 
-/* 暗色模式适配 tabs-container */
+/* Dark mode adaptation for tabs-container */
 [data-theme="dark"] .default-folders-tabs {
   background: rgba(28, 28, 28, 0.9);
 }
 
-/* 点状分页符样式 */
+/* Dot pagination style */
 .folder-tab {
   width: 8px;
   height: 8px;
@@ -1453,23 +1453,23 @@ body .default-folders-tabs.sidebar-expanded {
   will-change: transform;
 }
 
-/* 文件夹名称提示基础样式 */
+/* Folder name tooltip base style */
 .folder-tab::after {
   content: attr(data-name);
   position: absolute;
   left: 100%;
-  /* 改为显示在右侧 */
+  /* Change to show on the right */
   top: 50%;
-  /* 垂直居中 */
+  /* Vertical center */
   transform: translateY(-50%);
-  /* 垂直居中偏移 */
+  /* Vertical center offset */
   padding: 4px 8px;
   color: white;
   border-radius: 4px;
   font-size: 12px;
   white-space: nowrap;
   margin-left: 8px;
-  /* 添加左边距 */
+  /* Add left margin */
   z-index: 10;
   opacity: 0;
   pointer-events: none;
@@ -1477,15 +1477,15 @@ body .default-folders-tabs.sidebar-expanded {
   background-color: rgba(0, 0, 0, 0.8);
 }
 
-/* 响应式布局调整 */
+/* Responsive layout adjustments */
 @media (max-width: 1024px) {
   .default-folders-tabs {
     display: none !important;
-    /* 在小屏幕上隐藏 */
+    /* Hide on small screens */
   }
 }
 
-/* 暗色模式适配 */
+/* Dark mode adaptation */
 [data-theme="dark"] .folder-tab {
   background-color: #4b5563;
 }
@@ -1497,21 +1497,21 @@ body .default-folders-tabs.sidebar-expanded {
 [data-theme="dark"] .folder-tab.active {
   background-color: #10b981;
   box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
-  /* 暗色模式下调整光晕效果 */
+  /* Adjust glow effect in dark mode */
 }
 
-/* 添加界面元素设置区域的样式 */
+/* Add interface elements settings area styles */
 .interface-elements-settings {
   margin-top: 1rem;
   max-height: 520px;
-  /* 设置最大高度 */
+  /* Set maximum height */
   overflow-y: auto;
-  /* 添加竖向滚动条 */
+  /* Add vertical scrollbar */
   padding-right: 12px;
-  /* 为滚动条预留空间 */
+  /* Reserve space for scrollbar */
 }
 
-/* 自定义滚动条样式 */
+/* Custom scrollbar styles */
 .interface-elements-settings::-webkit-scrollbar {
   width: 8px;
 }
@@ -1530,7 +1530,7 @@ body .default-folders-tabs.sidebar-expanded {
   background: #a8a8a8;
 }
 
-/* 暗色模式适配 */
+/* Dark mode adaptation */
 [data-theme="dark"] .interface-elements-settings::-webkit-scrollbar-track {
   background: #2d2d2d;
 }
@@ -1543,7 +1543,7 @@ body .default-folders-tabs.sidebar-expanded {
   background: #5a5a5a;
 }
 
-/* 保持其他样式不变 */
+/* Keep other styles unchanged */
 .interface-elements-settings .setting-option {
   margin-bottom: 1rem;
   padding: 0.75rem;
@@ -1556,7 +1556,7 @@ body .default-folders-tabs.sidebar-expanded {
   background-color: #f0f0f0;
 }
 
-/* 暗色模式适配 */
+/* Dark mode adaptation */
 [data-theme="dark"] .interface-elements-settings .setting-option {
   background-color: #2d2d2d;
 }
@@ -1565,7 +1565,7 @@ body .default-folders-tabs.sidebar-expanded {
   background-color: #363636;
 }
 
-/* 搜索设置面板样式 */
+/* Search settings panel styles */
 .search-suggestions-settings {
   background: #f8f9fa;
   border-radius: 8px;
@@ -1580,7 +1580,7 @@ body .default-folders-tabs.sidebar-expanded {
   margin-bottom: 0;
 }
 
-/* 暗色模式适配 */
+/* Dark mode adaptation */
 [data-theme="dark"] .search-suggestions-settings {
   background: #2d2d2d;
 }
@@ -1591,16 +1591,16 @@ body .default-folders-tabs.sidebar-expanded {
   background-color: #404040;
 }
 
-/* 修改设置侧边栏样式，使其不使用遮罩 */
+/* Modify settings sidebar styles to disable overlay */
 .settings-sidebar {
   position: fixed;
   top: 0;
   right: -600px;
-  /* 增加初始位置宽度 */
+  /* Increase initial position width */
   width: 600px;
-  /* 增加到600px以适应长文本 */
+  /* Increase to 600px for long text */
   max-width: 90%;
-  /* 确保在较小屏幕上不会太宽 */
+  /* Ensure not too wide on small screens */
   height: 100%;
   background-color: #ffffff;
   box-shadow: -1px 0 5px rgba(0, 0, 0, 0.05);
@@ -1609,7 +1609,7 @@ body .default-folders-tabs.sidebar-expanded {
   transition: right 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 添加平板设备的断点 */
+/* Add tablet breakpoint */
 @media (max-width: 1024px) {
   .settings-sidebar {
     width: 80%;
@@ -1618,7 +1618,7 @@ body .default-folders-tabs.sidebar-expanded {
   }
 }
 
-/* 保持移动设备的设置 */
+/* Maintain mobile settings */
 @media (max-width: 768px) {
   .settings-sidebar {
     width: 100%;
@@ -1630,10 +1630,10 @@ body .default-folders-tabs.sidebar-expanded {
   right: 0;
 }
 
-/* 移除遮罩层样式 */
+/* Remove overlay style */
 .settings-overlay {
   display: none !important;
-  /* 完全禁用遮罩层 */
+  /* Completely disable overlay */
 }
 
 .settings-sidebar-content {
@@ -1688,7 +1688,7 @@ body .default-folders-tabs.sidebar-expanded {
 
 }
 
-/* 响应式设计 */
+/* Responsive design */
 @media (max-width: 768px) {
   .settings-sidebar {
     width: 100%;
@@ -1696,7 +1696,7 @@ body .default-folders-tabs.sidebar-expanded {
   }
 }
 
-/* 设置选项卡按钮样式 */
+/* Set tab button styles */
 .settings-tab-button {
   text-align: left;
   padding: 10px 15px;
@@ -1721,7 +1721,7 @@ body .default-folders-tabs.sidebar-expanded {
   font-weight: 500;
 }
 
-/* 暗色模式适配 */
+/* Dark mode adaptation */
 [data-theme="dark"] .settings-sidebar-nav {
   border-right-color: #333333;
 }
@@ -1748,7 +1748,7 @@ body .default-folders-tabs.sidebar-expanded {
   color: #ffffff;
 }
 
-/* 响应式设计 - 在小屏幕上切换回上下结构 */
+/* Responsive design - switch back to top-down on small screens */
 @media (max-width: 768px) {
   .settings-sidebar .settings-layout {
     flex-direction: column;
@@ -1790,7 +1790,7 @@ body .default-folders-tabs.sidebar-expanded {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* 新增书签卡片高度设置样式 */
+/* Add bookmark card height settings styles */
 #card-height-settings {
   margin-bottom: 24px;
   padding: 16px;
@@ -1804,7 +1804,7 @@ body .default-folders-tabs.sidebar-expanded {
   color: #e5e7eb;
 }
 
-/* 暗色模式适配 */
+/* Dark mode adaptation */
 [data-theme="dark"] #container-width-settings {
   background: #2d2d2d;
 }
@@ -1818,7 +1818,7 @@ body .default-folders-tabs.sidebar-expanded {
   margin-bottom: 1rem;
 }
 
-/* 赞赏页面样式 */
+/* Donation page styles */
 .donate-description {
   font-size: 14px;
   line-height: 1.6;
@@ -1908,7 +1908,7 @@ body .default-folders-tabs.sidebar-expanded {
   color: #10b981;
 }
 
-/* 保留原有的donate-list-link样式用于兼容性 */
+/* Keep original donate-list-link styles for compatibility */
 .donate-list-link {
   display: block;
   margin-top: 10px;
@@ -1920,7 +1920,7 @@ body .default-folders-tabs.sidebar-expanded {
   pointer-events: auto;
   position: relative;
   z-index: 1005;
-  /* 确保链接的z-index高于侧边栏 */
+  /* Ensure link z-index is higher than sidebar */
 }
 
 .donate-list-link:hover {
@@ -1969,7 +1969,7 @@ body .default-folders-tabs.sidebar-expanded {
   margin-top: 16px;
 }
 
-/* 暗色模式适配 */
+/* Dark mode adaptation */
 [data-theme="dark"] .donate-description {
   color: #e5e7eb;
 }
@@ -1990,35 +1990,40 @@ body .default-folders-tabs.sidebar-expanded {
   color: #10b981;
 }
 
-/* 优化悬停和激活状态的动画 */
+/* Optimize hover and active state animations */
+.default-folders-tabs .tab:hover {
+  transform: translateY(-2px);
+  background-color: #d1d5db;
+}
+
 .folder-tab:hover {
   transform: scale(1.2);
   background-color: #d1d5db;
 }
 
-/* 加强激活状态的显示效果 */
+/* Enhance active state display */
 .folder-tab.active {
   width: 10px;
   height: 10px;
   background-color: #10b981;
   transform: scale(1.2);
   box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
-  /* 添加光晕效果 */
+  /* Add glow effect */
 }
 
-/* 悬停时的提示样式 */
+/* Tooltip style on hover */
 .folder-tab:hover::after {
   opacity: 1;
 }
 
-/* 切换时的临时提示样式 */
+/* Temporary tooltip style during toggle */
 .folder-tab.active.switching::after {
   opacity: 1;
   background-color: rgba(16, 185, 129, 0.9);
   animation: fadeOutAfterDelay 1.5s ease forwards;
 }
 
-/* 调整淡出动画时间比例 */
+/* Adjust fade-out animation timing */
 @keyframes fadeOutAfterDelay {
 
   0%,
@@ -2031,12 +2036,12 @@ body .default-folders-tabs.sidebar-expanded {
   }
 }
 
-/* 移除之前的重复样式 */
+/* Remove previous duplicate styles */
 .folder-tab.active::after {
   opacity: 0;
 }
 
-/* 切换时的动画效果 */
+/* Animation effect during toggle */
 .folder-tab.switching {
   animation: pulse 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -2055,7 +2060,7 @@ body .default-folders-tabs.sidebar-expanded {
   }
 }
 
-/* 快捷键设置样式 */
+/* Shortcut settings styles */
 .shortcuts-settings-container {
   margin-top: 1.5rem;
 }
@@ -2119,7 +2124,7 @@ body .default-folders-tabs.sidebar-expanded {
   color: #10b981;
 }
 
-/* 暗色模式适配 */
+/* Dark mode adaptation */
 [data-theme="dark"] .shortcut-item {
   background-color: #1f2937;
   border-color: #374151;
@@ -2146,7 +2151,7 @@ body .default-folders-tabs.sidebar-expanded {
   color: #10b981;
 }
 
-/* 必应壁纸样式 */
+/* Bing wallpaper styles */
 .bing-wallpapers-section {
   margin-bottom: 16px;
   max-width: 800px;
@@ -2217,7 +2222,7 @@ body .default-folders-tabs.sidebar-expanded {
   opacity: 0.8;
 }
 
-/* 暗黑模式样式 */
+/* Dark mode styles */
 [data-theme="dark"] .bing-wallpapers-title,
 [data-theme="dark"] .wallpaper-preset-title {
   color: var(--text-color-dark);
@@ -2231,13 +2236,13 @@ body .default-folders-tabs.sidebar-expanded {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* 必应壁纸的激活状态样式 */
+/* Bing wallpaper active state styles */
 .bing-wallpaper-item.active {
   border: 2px solid var(--primary-color, #10b981);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* 暗黑模式下的激活状态样式 */
+/* Active state styles in dark mode */
 [data-theme="dark"] .bing-wallpaper-item.active {
   border-color: var(--primary-color, #10b981);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);

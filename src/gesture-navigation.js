@@ -49,7 +49,7 @@ function navigateToParent(currentFolderId, updateDisplay) {
         updateDisplay(parentId).finally(() => {
           setTimeout(() => {
             isNavigating = false;
-            // 重置所有导航标志
+            // Reset all navigation flags
             resetNavigationFlags();
           }, NAVIGATION_COOLDOWN);
         });

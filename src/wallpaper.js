@@ -13,23 +13,23 @@ class WallpaperManager {
         this.uploadInput = document.getElementById('upload-wallpaper');
         this.mainElement = document.querySelector('main');
 
-        // 初始化预设壁纸列表
+        // Initialize preset wallpaper list
         this.initializePresetWallpapers();
 
-        // 初始化预加载队列
+        // Initialize preload queue
         this.preloadQueue = new Set();
         this.preloadedImages = new Map();
 
-        // 初始化用户壁纸数组
+        // Initialize user wallpaper array
         this.userWallpapers = [];
 
-        // 初始化其他属性
+        // Initialize other properties
         this.activeOption = null;
 
-        // 加载用户壁纸
+        // Load user wallpapers
         this.loadUserWallpapers();
 
-        // 初始化事件监听和其他设置
+        // Initialize event listeners and other settings
         this.initializeEventListeners();
         this.initialize();
 
@@ -161,7 +161,7 @@ class WallpaperManager {
         // Remove active state from all options
         this.clearAllActiveStates();
 
-        // 设置当前选项为 active
+        // Set current option as active
         option.classList.add('active');
         this.activeOption = option;
 
@@ -192,7 +192,7 @@ class WallpaperManager {
         // Remove active state from all options
         this.clearAllActiveStates();
 
-        // 设置当前选项为 active
+        // Set current option as active
         option.classList.add('active');
         this.activeOption = option;
 
@@ -316,7 +316,7 @@ class WallpaperManager {
             defaultBgOption.classList.add('active');
             this.activeOption = defaultBgOption;
             document.documentElement.className = 'gradient-background-7';
-            // 保存默认背景设置
+            // Save default background settings
             localStorage.setItem('useDefaultBackground', 'true');
             localStorage.setItem('selectedBackground', 'gradient-background-7');
         }
@@ -798,37 +798,37 @@ class WallpaperManager {
                     this.compressAndSetWallpaper(img, maxResolution);
                 }
             } catch (error) {
-                console.error('处理壁纸时出错:', error);
-                alert(this.getLocalizedMessage('wallpaperSetError', '设置壁纸失败，请重试'));
+                console.error('Error processing wallpaper:', error);
+                alert(this.getLocalizedMessage('wallpaperSetError', 'Failed to set wallpaper, please try again'));
             } finally {
                 URL.revokeObjectURL(img.src);
             }
         };
         img.onerror = () => {
-            alert(this.getLocalizedMessage('imageLoadError', '图片加载失败，请尝试其他图片'));
+            alert(this.getLocalizedMessage('imageLoadError', 'Image failed to load, please try another image'));
             URL.revokeObjectURL(img.src);
         };
         img.src = e.target.result;
     }
 
-    // 初始化必应壁纸
+    // Initialize Bing wallpapers
     async initBingWallpapers() {
         try {
-            // 获取8天的必应壁纸
+            // Get Bing wallpapers
             const wallpapers = await this.fetchBingWallpapers(4);
             this.bingWallpapers = wallpapers;
 
-            // 渲染壁纸
+            // Render wallpapers
             this.renderBingWallpapers();
         } catch (error) {
             console.error('Failed to initialize Bing wallpapers:', error);
         }
     }
 
-    // 获取必应壁纸
+    // Get Bing wallpapers
     async fetchBingWallpapers(count = 4) {
         try {
-            // 使用中国的必应 API，添加 UHD 参数获取高清壁纸
+            // Use Chinese Bing API, add UHD parameter for high-def wallpaper
             const response = await fetch(
                 `https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=${count}&mkt=zh-CN&uhd=1&uhdwidth=3840&uhdheight=2160`
             );
@@ -839,9 +839,9 @@ class WallpaperManager {
                 return [];
             }
 
-            // 使用解构赋值和箭头函数简化代码
+            // Use destructuring and arrow functions to simplify code
             return data.images.map(({ url, title, copyright, startdate }) => ({
-                // 使用中国的必应域名
+                // Use Chinese Bing domain
                 url: `https://cn.bing.com${url}`,
                 title: title || copyright?.split('(')[0]?.trim() || 'Bing Wallpaper',
                 copyright,
@@ -853,7 +853,7 @@ class WallpaperManager {
         }
     }
 
-    // 渲染必应壁纸
+    // Render Bing wallpapers
     renderBingWallpapers() {
         const container = document.querySelector('.bing-wallpapers-grid');
         if (!container) return;
@@ -866,7 +866,7 @@ class WallpaperManager {
         container.appendChild(fragment);
     }
 
-    // 创建必应壁纸元素
+    // Create Bing wallpaper element
     createBingWallpaperElement(wallpaper) {
         const { url, title, date } = wallpaper;
         const element = document.createElement('div');
@@ -881,7 +881,7 @@ class WallpaperManager {
             </div>
         `;
 
-        // 修改点击事件，使用 handleWallpaperOptionClick
+        // Modify click event, use handleWallpaperOptionClick
         element.addEventListener('click', () => {
             this.handleWallpaperOptionClick(element);
         });
@@ -889,14 +889,14 @@ class WallpaperManager {
         return element;
     }
 
-    // 格式化日期
+    // Format date
     formatDate(dateStr) {
         try {
             const year = dateStr.slice(0, 4);
             const month = parseInt(dateStr.slice(4, 6));
             const day = parseInt(dateStr.slice(6, 8));
             const date = new Date(year, month - 1, day);
-            return `${month}月${day}日`;
+            return `${month}/${day}`;
         } catch (error) {
             console.error('Error formatting date:', error);
             return dateStr;
@@ -905,7 +905,7 @@ class WallpaperManager {
 }
 
 function optimizeMemoryUsage(img) {
-    // 在压缩完成后释放原始图片内存
+    // Release original image memory after compression
     const url = img.src;
     img.onload = null;
     img.src = '';

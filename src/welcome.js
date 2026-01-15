@@ -1,35 +1,35 @@
 let userName = localStorage.getItem('userName') || 'Sowhale';
 
-// 集中管理欢迎消息的颜色逻辑
+// Centralized management for welcome message color logic
 const WelcomeManager = {
     colorCache: {
         lastBackground: null,
         lastTextColor: null
     },
 
-    // 初始化方法
+    // Initialization method
     initialize() {
-        // 先检查欢迎语是否应该显示，再更新内容
+        // Check if welcome message should be displayed first, then update content
         chrome.storage.sync.get(['showWelcomeMessage'], (result) => {
             const welcomeElement = document.getElementById('welcome-message');
             if (welcomeElement) {
-                // 立即设置显示状态，避免闪烁
+                // Immediately set display status to avoid flickering
                 welcomeElement.style.display = result.showWelcomeMessage !== false ? '' : 'none';
 
-                // 只有在需要显示时才更新内容
+                // Only update content if display is required
                 if (result.showWelcomeMessage !== false) {
-                    this.updateWelcomeMessage(false); // 传入false表示不再检查显示状态
+                    this.updateWelcomeMessage(false); // Pass false to indicate no more checks for display state
                 }
             }
 
-            // 继续其他初始化
+            // Continue other initialization
             this.initializeColorCache();
             this.setupEventListeners();
             this.setupThemeChangeListener();
         });
     },
 
-    // 更新欢迎消息
+    // Update welcome message
     updateWelcomeMessage(checkVisibility = true) {
         const now = new Date();
         const hours = now.getHours();
@@ -254,7 +254,7 @@ const WelcomeManager = {
                         const currentText = welcomeElement.textContent;
                         // Check if username is missing
                         if (currentText && !currentText.includes(userName) &&
-                            (currentText.includes('早上好') || currentText.includes('下午好') || currentText.includes('晚上好'))) {
+                            (currentText.includes('Good morning') || currentText.includes('Good afternoon') || currentText.includes('Good evening'))) {
                             this.updateWelcomeMessage();
                         }
                     }

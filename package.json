@@ -1,5 +1,5 @@
 {
-  "name": "bookmark-extension",
+  "name": "simple-new-tab",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {

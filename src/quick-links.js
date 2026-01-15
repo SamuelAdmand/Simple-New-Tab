@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function getSiteName(title, url) {
     const MAX_WIDTH_EN = 16; // Max width for English
-    const MAX_WIDTH_CN = 14; // Max width for Chinese (allows 7 Chinese characters)
+    const MAX_WIDTH_CJK = 14; // Max width for CJK (allows 7 CJK characters)
     const MAX_WIDTH_MIXED = 15; // Max width for mixed language
 
     function getVisualWidth(str) {
@@ -62,9 +62,9 @@ document.addEventListener('DOMContentLoaded', function () {
       if (chineseRatio === 0) {
         maxWidth = MAX_WIDTH_EN;
       } else if (chineseRatio === 1) {
-        maxWidth = MAX_WIDTH_CN;
+        maxWidth = MAX_WIDTH_CJK;
       } else {
-        maxWidth = Math.round(MAX_WIDTH_MIXED * (1 - chineseRatio) + MAX_WIDTH_CN * chineseRatio / 2);
+        maxWidth = Math.round(MAX_WIDTH_MIXED * (1 - chineseRatio) + MAX_WIDTH_CJK * chineseRatio / 2);
       }
 
       if (visualWidth > maxWidth) {
@@ -975,17 +975,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Optimize judge main page logic
   function isMainPageUrl(path, query) {
-    // 1. 检查基本路径
+    // 1. Check base paths
     if (MAIN_PAGE_PATTERNS.paths.includes(path)) {
       return true;
     }
 
-    // 2. 检查本地化路径变体
+    // 2. Check localized path variants
     if (MAIN_PAGE_PATTERNS.localizedPaths.some(localePath => path.startsWith(localePath))) {
       return true;
     }
 
-    // 3. 检查查询参数
+    // 3. Check query parameters
     if (query && MAIN_PAGE_PATTERNS.queryParams.some(param => query.includes(param))) {
       return true;
     }

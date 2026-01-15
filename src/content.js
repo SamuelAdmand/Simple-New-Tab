@@ -305,7 +305,7 @@
   </li>
   <li data-url="https://www.baidu.com/s?wd=" data-shortcut="3" ${defaultSearchEngine === 'baidu' ? 'class="selected"' : ''}>
     <img src="${chrome.runtime.getURL('../images/baidu-logo.svg')}" alt="Baidu" class="search-icon">
-    <span>百度 <span class="shortcut-key">Alt+3</span></span>
+    <span>Baidu <span class="shortcut-key">Alt+3</span></span>
   </li>
   <li data-url="https://kimi.moonshot.cn/?q=" data-shortcut="4" ${defaultSearchEngine === 'kimi' ? 'class="selected"' : ''}>
     <img src="${chrome.runtime.getURL('../images/kimi-logo.svg')}" alt="Kimi" class="search-icon">
@@ -321,7 +321,7 @@
   </li>
   <li data-url="https://www.doubao.com/chat/?q=" data-shortcut="7" ${defaultSearchEngine === 'doubao' ? 'class="selected"' : ''}>
     <img src="${chrome.runtime.getURL('../images/sider-icon/doubao-logo.png')}" alt="Doubao" class="search-icon">
-    <span>豆包 <span class="shortcut-key">Alt+7</span></span>
+    <span>Doubao <span class="shortcut-key">Alt+7</span></span>
   </li>
   <li data-url="https://chatgpt.com/?q=" data-shortcut="8" ${defaultSearchEngine === 'ChatGPT' ? 'class="selected"' : ''}>
     <img src="${chrome.runtime.getURL('../images/sider-icon/chatgpt-logo.svg')}" alt="ChatGPT" class="search-icon">
@@ -916,10 +916,10 @@
 
   log('Content script initialized');
 
-  // 在文件顶部声明变量
+  // Declare variables at the top of the file
   let isFloatingBallEnabled = true;
 
-  // 更新悬浮球显示状态的函数
+  // Function to update floating ball visibility
   function updateFloatingBallVisibility(enabled) {
     isFloatingBallEnabled = enabled;
     if (floatingButton) {
@@ -932,12 +932,12 @@
     }
   }
 
-  // 初始化时获取设置
+  // Get settings during initialization
   chrome.storage.sync.get(['enableFloatingBall'], (result) => {
     updateFloatingBallVisibility(result.enableFloatingBall !== false);
   });
 
-  // 监听来自 background 的消息
+  // Listen for messages from background
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'updateFloatingBall') {
       updateFloatingBallVisibility(request.enabled);
@@ -946,7 +946,7 @@
     return true;
   });
 
-  // 确保在创建悬浮球时应用当前设置
+  // Ensure current settings are applied when creating floating ball
   floatingButton.style.display = isFloatingBallEnabled ? 'flex' : 'none';
 
   const style = document.createElement('style');
@@ -982,7 +982,7 @@
         console.error('Failed to open side panel:',
           chrome.runtime.lastError?.message || response?.error || 'Unknown error');
 
-        // 如果失败，尝试延迟重试一次
+        // If failed, try retrying once with delay
         setTimeout(() => {
           chrome.runtime.sendMessage({
             action: 'openSidePanel',

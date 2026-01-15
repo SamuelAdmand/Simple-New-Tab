@@ -1,3 +1,25 @@
+# Translation and search scripts
 find_chinese.py
+find_styles_chinese.py
+find_non_ascii.py
+force_translate.py
+scan_files.py
+translate_search_engines.py
+translate_styles.py
+translate_wallpaper.py
+
+# Result and temporary files
 non_ascii_results.txt
+non_ascii_files.txt
+styles_chinese.txt
+*.log
+
+# Project documentation (Private)
 ROADMAP.md
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Dependencies
+node_modules/

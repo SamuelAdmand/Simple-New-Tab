@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="loading-wallpaper">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,6 +21,7 @@
   <script type="module" src="settings.js"></script>
   <script type="module" src="search-engine-dropdown.js"></script>
 </head>
+
 <body class="h-screen flex flex-col">
   <div id="sidebar-container" class="flex collapsed">
     <aside class="custom-width p-4 overflow-auto border-r border-gray-200 relative">
@@ -49,7 +51,8 @@
                   class="search-engine-icon">
                 <span class="dropdown-indicator">▼</span>
               </div>
-              <textarea class="search-input" data-i18n-placeholder="searchPlaceholder" rows="1" style="width: 100%; resize: none; padding-left: 40px;"></textarea>
+              <textarea class="search-input" data-i18n-placeholder="searchPlaceholder" rows="1"
+                style="width: 100%; resize: none; padding-left: 40px;"></textarea>
             </div>
             <div class="search-suggestions-wrapper">
               <div class="line-container" id="line-container">
@@ -130,8 +133,8 @@
         </div>
       </div>
       <footer class="bg-gray-50 text-center p-4 border-t border-gray-200 mt-4">
-      <!-- New progress bar container -->
-      <div id="year-progress" class="year-progress-container"></div>
+        <!-- New progress bar container -->
+        <div id="year-progress" class="year-progress-container"></div>
       </footer>
       <div id="side-panel-content" class="side-panel-content">
         <iframe id="side-panel-iframe" class="side-panel-iframe"></iframe>
@@ -189,18 +192,21 @@
           <button class="settings-tab-button active" data-tab="appearance" data-i18n="appearanceTab">Appearance</button>
           <button class="settings-tab-button" data-tab="layout" data-i18n="layoutTab">Layout</button>
           <button class="settings-tab-button" data-tab="search" data-i18n="searchTab">Search</button>
-          <button class="settings-tab-button" data-tab="floating-ball" data-i18n="floatingBallTab">Floating Ball</button>
+          <button class="settings-tab-button" data-tab="floating-ball" data-i18n="floatingBallTab">Floating
+            Ball</button>
           <button class="settings-tab-button" data-tab="quick-links" data-i18n="quickLinksTab">Quick Links</button>
           <button class="settings-tab-button" data-tab="link-opening" data-i18n="linkOpeningTab">Link Opening</button>
-          <button class="settings-tab-button" data-tab="bookmark-management" data-i18n="bookmarkManagementTab">Bookmarks</button>
-          <button class="settings-tab-button" data-tab="wheel-switching" data-i18n="wheelSwitchingTab">Wheel Switch</button>
+          <button class="settings-tab-button" data-tab="bookmark-management"
+            data-i18n="bookmarkManagementTab">Bookmarks</button>
+          <button class="settings-tab-button" data-tab="wheel-switching" data-i18n="wheelSwitchingTab">Wheel
+            Switch</button>
           <button class="settings-tab-button" data-tab="shortcuts" data-i18n="shortcutsTab">Shortcuts</button>
           <button class="settings-tab-button" data-tab="donate" data-i18n="donateTab">Support Us</button>
           <button class="settings-tab-button" data-tab="about" data-i18n="aboutTab">About</button>
         </div>
         <div class="settings-content">
           <div id="appearance-settings" class="settings-tab-content active">
-            
+
             <h4 class="settings-section-title" data-i18n="themeTitle">Theme</h4>
             <div class="theme-setting-section">
               <select id="theme-select" class="theme-select">
@@ -209,7 +215,7 @@
                 <option value="auto" data-i18n="autoTheme">System</option>
               </select>
             </div>
-            
+
             <h4 class="settings-section-title" data-i18n="solidBackgroundTitle">Solid Background</h4>
             <div class="settings-background-options">
               <div class="settings-bg-option gradient-background-1" data-bg="gradient-background-1"></div>
@@ -220,17 +226,17 @@
               <div class="settings-bg-option gradient-background-6" data-bg="gradient-background-6"></div>
               <div class="settings-bg-option gradient-background-7" data-bg="gradient-background-7"></div>
             </div>
-            
+
             <div class="wallpaper-section">
 
               <h4 class="settings-section-title" data-i18n="bingWallpapersTitle">Bing Wallpapers</h4>
-              <!-- 必应壁纸区域 -->
+              <!-- Bing wallpaper section -->
               <div class="bing-wallpapers-section">
                 <div class="bing-wallpapers-grid">
                   <!-- Bing wallpapers will be loaded dynamically by JS -->
                 </div>
               </div>
-              
+
               <h4 class="settings-section-title" data-i18n="presetWallpaperTitle">Preset Wallpapers</h4>
               <div class="wallpaper-options">
                 <div class="wallpaper-option" data-wallpaper-url="../images/wallpapers/preset1.jpg"></div>
@@ -252,8 +258,9 @@
           </div>
           <div id="layout-settings" class="settings-tab-content">
             <h3 class="settings-modal-subtitle" data-i18n="layoutSettingsTitle">Layout</h3>
-            <p data-i18n="layoutSettingsDescription" class="settings-description">Customize how interface elements are displayed.</p>
-            
+            <p data-i18n="layoutSettingsDescription" class="settings-description">Customize how interface elements are
+              displayed.</p>
+
             <h4 class="settings-section-title" data-i18n="bookmarkWidthTitle">Bookmark Width</h4>
             <div id="floating-width-settings">
               <div class="slider-container" style="display: flex; align-items: center; gap: 10px;">
@@ -300,7 +307,8 @@
             <h4 class="settings-section-title" data-i18n="interfaceElementsTitle">Interface Elements</h4>
             <div class="interface-elements-settings">
               <div class="setting-option">
-                <label for="show-welcome-message" class="switch-label" data-i18n="showWelcomeMessage">Show Welcome Message</label>
+                <label for="show-welcome-message" class="switch-label" data-i18n="showWelcomeMessage">Show Welcome
+                  Message</label>
                 <label class="switch">
                   <input type="checkbox" id="show-welcome-message">
                   <span class="slider round"></span>
@@ -314,45 +322,48 @@
                   <span class="slider round"></span>
                 </label>
               </div>
-                <h4 class="settings-section-title" data-i18n="quickAccessLinksTitle">Quick Access Links</h4>
-                
-                <div class="setting-option">
-                  <label for="show-history-link" class="switch-label" data-i18n="showHistoryLink">Show History</label>
-                  <label class="switch">
-                    <input type="checkbox" id="show-history-link">
-                    <span class="slider round"></span>
-                  </label>
-                </div>
-                
-                <div class="setting-option">
-                  <label for="show-downloads-link" class="switch-label" data-i18n="showDownloadsLink">Show Downloads</label>
-                  <label class="switch">
-                    <input type="checkbox" id="show-downloads-link">
-                    <span class="slider round"></span>
-                  </label>
-                </div>
-                
-                <div class="setting-option">
-                  <label for="show-passwords-link" class="switch-label" data-i18n="showPasswordsLink">Show Passwords</label>
-                  <label class="switch">
-                    <input type="checkbox" id="show-passwords-link">
-                    <span class="slider round"></span>
-                  </label>
-                </div>
-                
-                <div class="setting-option">
-                  <label for="show-extensions-link" class="switch-label" data-i18n="showExtensionsLink">Show Extensions</label>
-                  <label class="switch">
-                    <input type="checkbox" id="show-extensions-link">
-                    <span class="slider round"></span>
-                  </label>
-                </div>
+              <h4 class="settings-section-title" data-i18n="quickAccessLinksTitle">Quick Access Links</h4>
+
+              <div class="setting-option">
+                <label for="show-history-link" class="switch-label" data-i18n="showHistoryLink">Show History</label>
+                <label class="switch">
+                  <input type="checkbox" id="show-history-link">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+
+              <div class="setting-option">
+                <label for="show-downloads-link" class="switch-label" data-i18n="showDownloadsLink">Show
+                  Downloads</label>
+                <label class="switch">
+                  <input type="checkbox" id="show-downloads-link">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+
+              <div class="setting-option">
+                <label for="show-passwords-link" class="switch-label" data-i18n="showPasswordsLink">Show
+                  Passwords</label>
+                <label class="switch">
+                  <input type="checkbox" id="show-passwords-link">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+
+              <div class="setting-option">
+                <label for="show-extensions-link" class="switch-label" data-i18n="showExtensionsLink">Show
+                  Extensions</label>
+                <label class="switch">
+                  <input type="checkbox" id="show-extensions-link">
+                  <span class="slider round"></span>
+                </label>
+              </div>
             </div>
           </div>
           <div id="search-settings" class="settings-tab-content">
             <h3 class="settings-modal-subtitle" data-i18n="searchSettingsTitle">Search Settings</h3>
             <p data-i18n="searchSettingsDescription">Customize search suggestions and behavior</p>
-            
+
             <h4 class="settings-section-title" data-i18n="searchBoxDisplayTitle">Search Box Display</h4>
             <div class="setting-option">
               <label for="show-search-box" class="switch-label" data-i18n="showSearchBox">Show Search Box</label>
@@ -361,30 +372,33 @@
                 <span class="slider round"></span>
               </label>
             </div>
-            
+
             <h4 class="settings-section-title" data-i18n="searchSuggestionsTitle">Search Suggestions</h4>
             <div class="search-suggestions-settings">
               <div class="setting-option">
-                <label for="show-history-suggestions" class="switch-label" data-i18n="showHistorySuggestions">Show History Suggestions</label>
+                <label for="show-history-suggestions" class="switch-label" data-i18n="showHistorySuggestions">Show
+                  History Suggestions</label>
                 <label class="switch">
                   <input type="checkbox" id="show-history-suggestions">
                   <span class="slider round"></span>
                 </label>
               </div>
-              
+
               <div class="setting-option">
-                <label for="show-bookmark-suggestions" class="switch-label" data-i18n="showBookmarkSuggestions">Show Bookmark Suggestions</label>
+                <label for="show-bookmark-suggestions" class="switch-label" data-i18n="showBookmarkSuggestions">Show
+                  Bookmark Suggestions</label>
                 <label class="switch">
                   <input type="checkbox" id="show-bookmark-suggestions">
                   <span class="slider round"></span>
                 </label>
               </div>
             </div>
-            
+
             <h4 class="settings-section-title" data-i18n="searchResultsOpeningTitle">Search Results Opening</h4>
             <div class="search-opening-settings">
               <div class="setting-option">
-                <label for="open-search-in-new-tab" class="switch-label" data-i18n="openSearchInNewTab">Open Search in New Tab</label>
+                <label for="open-search-in-new-tab" class="switch-label" data-i18n="openSearchInNewTab">Open Search in
+                  New Tab</label>
                 <label class="switch">
                   <input type="checkbox" id="open-search-in-new-tab" checked>
                   <span class="slider round"></span>
@@ -393,21 +407,25 @@
             </div>
           </div>
           <div id="floating-ball-settings" class="settings-tab-content">
-             <h3 class="settings-modal-subtitle" data-i18n="floatingBallSettingsTitle">Floating Ball Settings</h3>
-             <p data-i18n="floatingBallDescription">After enabling, a floating icon will appear in the top right corner for quick access to search and bookmarks.</p>
-             <div class="setting-option">
-               <label for="enable-floating-ball" class="switch-label" data-i18n="enableFloatingBall">Enable Floating Ball</label>
-               <label class="switch">
-                 <input type="checkbox" id="enable-floating-ball">
-                 <span class="slider round"></span>
-               </label>
-             </div>
-           </div>
+            <h3 class="settings-modal-subtitle" data-i18n="floatingBallSettingsTitle">Floating Ball Settings</h3>
+            <p data-i18n="floatingBallDescription">After enabling, a floating icon will appear in the top right corner
+              for quick access to search and bookmarks.</p>
+            <div class="setting-option">
+              <label for="enable-floating-ball" class="switch-label" data-i18n="enableFloatingBall">Enable Floating
+                Ball</label>
+              <label class="switch">
+                <input type="checkbox" id="enable-floating-ball">
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
           <div id="quick-links-settings" class="settings-tab-content">
             <h3 class="settings-modal-subtitle" data-i18n="quickLinksSettings">Quick Links Settings</h3>
-            <p data-i18n="quickLinksDescription">After enabling, a quick links bar will appear below the search box showing your most visited sites.</p>
+            <p data-i18n="quickLinksDescription">After enabling, a quick links bar will appear below the search box
+              showing your most visited sites.</p>
             <div class="setting-option">
-              <label for="enable-quick-links" class="switch-label" data-i18n="enableQuickLinks">Enable Quick Links</label>
+              <label for="enable-quick-links" class="switch-label" data-i18n="enableQuickLinks">Enable Quick
+                Links</label>
               <label class="switch">
                 <input type="checkbox" id="enable-quick-links">
                 <span class="slider round"></span>
@@ -425,121 +443,129 @@
                 <span class="slider round"></span>
               </label>
             </div>
-            
+
             <!-- Add link opening options for side panel mode -->
             <h4 class="settings-section-title" data-i18n="sidePanelLinkOpeningTitle">Side Panel Mode</h4>
             <p data-i18n="sidePanelLinkOpeningDescription">Set how bookmarks are opened in side panel mode.</p>
             <div class="setting-option">
-              <label for="sidepanel-open-in-new-tab" class="switch-label" data-i18n="sidePanelOpenInNewTab">Open in New Tab</label>
+              <label for="sidepanel-open-in-new-tab" class="switch-label" data-i18n="sidePanelOpenInNewTab">Open in New
+                Tab</label>
               <label class="switch">
                 <input type="checkbox" id="sidepanel-open-in-new-tab" checked>
                 <span class="slider round"></span>
               </label>
             </div>
             <div class="setting-option">
-              <label for="sidepanel-open-in-sidepanel" class="switch-label" data-i18n="sidePanelOpenInSidepanel">Open in Side Panel</label>
+              <label for="sidepanel-open-in-sidepanel" class="switch-label" data-i18n="sidePanelOpenInSidepanel">Open in
+                Side Panel</label>
               <label class="switch">
                 <input type="checkbox" id="sidepanel-open-in-sidepanel">
                 <span class="slider round"></span>
               </label>
             </div>
           </div>
-           <div id="bookmark-management-settings" class="settings-tab-content">
-             <h3 class="settings-modal-subtitle" data-i18n="bookmarkCleanupSettingsTitle">Bookmark Cleanup & Stats</h3>
-             <p data-i18n="bookmarkCleanupSettingsDescription">Clean duplicates and broken bookmarks, view stats to manage bookmarks better.</p>
-             
-             <div class="bookmark-cleanup-actions">
-               <button id="open-bookmark-cleanup" class="primary-button">
-                 <span class="material-icons">cleaning_services</span>
-                 <span data-i18n="openBookmarkCleanup">Open Cleanup Tool</span>
-               </button>
-             </div>
-           </div>
-           <div id="wheel-switching-settings" class="settings-tab-content">
-             <h3 class="settings-modal-subtitle" data-i18n="wheelSwitchingSettingsTitle">Wheel Switch</h3>
-             <p data-i18n="wheelSwitchingDescription">Setup wheel switching function</p>
-             <div class="setting-option">
-               <label for="enable-wheel-switching" class="switch-label" data-i18n="enableWheelSwitching">Enable Wheel Switching</label>
-               <label class="switch">
-                 <input type="checkbox" id="enable-wheel-switching">
-                 <span class="slider round"></span>
-               </label>
-             </div>
-           </div>
-           <div id="shortcuts-settings" class="settings-tab-content">
-             <h3 class="settings-modal-subtitle" data-i18n="shortcutsSettingsTitle">Shortcuts</h3>
-             <p data-i18n="shortcutsSettingsDescription" class="settings-description">Customize Shortcuts</p>
-             
-             <div class="shortcuts-settings-container">
-               <div class="shortcut-item" id="configure-shortcuts">
-                 <div class="shortcut-info">
-                   <span class="shortcut-name" data-i18n="sidebarShortcutName">Side Panel Shortcut</span>
-                   <div class="shortcut-value">
-                     <span class="shortcut-value-label" data-i18n="shortcutValue">Default</span>
-                     <span class="shortcut-value-text">Alt/Command + B</span>
-                   </div>
-                 </div>
-                 <span class="material-icons shortcut-arrow">chevron_right</span>
-               </div>
-             </div>
-           </div>
-           <div id="donate-settings" class="settings-tab-content">
-             <h3 class="settings-modal-subtitle" data-i18n="donateTitle">Support TabMark</h3>
-             <p class="donate-description" data-i18n="donateDescription">If you find TabMark useful, please consider supporting its development. Your contribution will help us improve the extension and add new features.</p>
-             
-             <div class="donate-options">
-               <!-- WeChat Pay -->
-               <div class="donate-option">
-                 <h4 class="donate-option-title" data-i18n="wechatDonateTitle">WeChat Pay</h4>
-                 <div class="donate-qrcode-container">
-                   <img src="../images/wechat-donate.png" alt="WeChat Donate QR Code" class="donate-qrcode">
-                   <p class="donate-qrcode-text" data-i18n="scanQRCodeToDonate">Scan QR to Donate</p>
-                 </div>
-               </div>
-             </div>
-             
-             <!-- Donate list link - Independent area -->
-             <div class="donate-list-container">
-               <a href="https://cooing-loganberry-b74.notion.site/Tabmark-1af1ee1c3b3a80d7b268fda1c74f0404" target="_blank" class="donate-list-button">
-                 <span data-i18n="donateListLink">View Donation List</span>
-               </a>
-             </div>
-             
-             <p class="donate-thank-you" data-i18n="thankYouForSupport">Thank you for your support!</p>
-           </div>
-           <div id="about-settings" class="settings-tab-content">
-             <h3 class="settings-modal-subtitle" data-i18n="aboutTitle">About TabMark</h3>
-             <div class="about-content">
-               <img src="../images/logo.svg" alt="TabMark Logo" class="about-logo">
-               <p class="about-version"></p>
-               <p class="about-description" data-i18n="aboutDescription">
-                 TabMark is a simple and efficient bookmark management extension that helps you better organize and access your web favorites.
-               </p>
-               <div class="about-links">
-                 <a href="https://github.com/Alanrk/TabMark-Bookmark-New-Tab" target="_blank" class="about-link">
-                   <span class="material-icons">code</span>
-                   <span data-i18n="sourceCode">Source Code</span>
-                 </a>
-                  <a href="https://x.com/thesowhale" class="about-link" target="_blank">
-                    <img src="../images/twitter-logo.png" alt="Twitter" class="twitter-icon">
-                    <span>Twitter</span>
+          <div id="bookmark-management-settings" class="settings-tab-content">
+            <h3 class="settings-modal-subtitle" data-i18n="bookmarkCleanupSettingsTitle">Bookmark Cleanup & Stats</h3>
+            <p data-i18n="bookmarkCleanupSettingsDescription">Clean duplicates and broken bookmarks, view stats to
+              manage bookmarks better.</p>
+
+            <div class="bookmark-cleanup-actions">
+              <button id="open-bookmark-cleanup" class="primary-button">
+                <span class="material-icons">cleaning_services</span>
+                <span data-i18n="openBookmarkCleanup">Open Cleanup Tool</span>
+              </button>
+            </div>
+          </div>
+          <div id="wheel-switching-settings" class="settings-tab-content">
+            <h3 class="settings-modal-subtitle" data-i18n="wheelSwitchingSettingsTitle">Wheel Switch</h3>
+            <p data-i18n="wheelSwitchingDescription">Setup wheel switching function</p>
+            <div class="setting-option">
+              <label for="enable-wheel-switching" class="switch-label" data-i18n="enableWheelSwitching">Enable Wheel
+                Switching</label>
+              <label class="switch">
+                <input type="checkbox" id="enable-wheel-switching">
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+          <div id="shortcuts-settings" class="settings-tab-content">
+            <h3 class="settings-modal-subtitle" data-i18n="shortcutsSettingsTitle">Shortcuts</h3>
+            <p data-i18n="shortcutsSettingsDescription" class="settings-description">Customize Shortcuts</p>
+
+            <div class="shortcuts-settings-container">
+              <div class="shortcut-item" id="configure-shortcuts">
+                <div class="shortcut-info">
+                  <span class="shortcut-name" data-i18n="sidebarShortcutName">Side Panel Shortcut</span>
+                  <div class="shortcut-value">
+                    <span class="shortcut-value-label" data-i18n="shortcutValue">Default</span>
+                    <span class="shortcut-value-text">Alt/Command + B</span>
+                  </div>
+                </div>
+                <span class="material-icons shortcut-arrow">chevron_right</span>
+              </div>
+            </div>
+          </div>
+          <div id="donate-settings" class="settings-tab-content">
+            <h3 class="settings-modal-subtitle" data-i18n="donateTitle">Support TabMark</h3>
+            <p class="donate-description" data-i18n="donateDescription">If you find TabMark useful, please consider
+              supporting its development. Your contribution will help us improve the extension and add new features.</p>
+
+            <div class="donate-options">
+              <!-- WeChat Pay -->
+              <div class="donate-option">
+                <h4 class="donate-option-title" data-i18n="wechatDonateTitle">WeChat Pay</h4>
+                <div class="donate-qrcode-container">
+                  <img src="../images/wechat-donate.png" alt="WeChat Donate QR Code" class="donate-qrcode">
+                  <p class="donate-qrcode-text" data-i18n="scanQRCodeToDonate">Scan QR to Donate</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Donate list link - Independent area -->
+            <div class="donate-list-container">
+              <a href="https://cooing-loganberry-b74.notion.site/Tabmark-1af1ee1c3b3a80d7b268fda1c74f0404"
+                target="_blank" class="donate-list-button">
+                <span data-i18n="donateListLink">View Donation List</span>
+              </a>
+            </div>
+
+            <p class="donate-thank-you" data-i18n="thankYouForSupport">Thank you for your support!</p>
+          </div>
+          <div id="about-settings" class="settings-tab-content">
+            <h3 class="settings-modal-subtitle" data-i18n="aboutTitle">About TabMark</h3>
+            <div class="about-content">
+              <img src="../images/logo.svg" alt="TabMark Logo" class="about-logo">
+              <p class="about-version"></p>
+              <p class="about-description" data-i18n="aboutDescription">
+                TabMark is a simple and efficient bookmark management extension that helps you better organize and
+                access your web favorites.
+              </p>
+              <div class="about-links">
+                <a href="https://github.com/Alanrk/TabMark-Bookmark-New-Tab" target="_blank" class="about-link">
+                  <span class="material-icons">code</span>
+                  <span data-i18n="sourceCode">Source Code</span>
+                </a>
+                <a href="https://x.com/thesowhale" class="about-link" target="_blank">
+                  <img src="../images/twitter-logo.png" alt="Twitter" class="twitter-icon">
+                  <span>Twitter</span>
+                </a>
+                <a href="mailto:hello@ainewtab.app" class="about-link" target="_blank">
+                  <span class="material-icons">feedback</span>
+                  <span data-i18n="feedback">Email</span>
+                </a>
+                <a href="https://cooing-loganberry-b74.notion.site/Tabmark-59054bd6e444458986d1fc61a383e095"
+                  class="about-link" target="_blank">
+                  <span class="material-icons">feedback</span>
+                  <span data-i18n="feedbacks">Feedback</span>
+                </a>
+                <p class="official-website">
+                  <a href="https://www.ainewtab.app" target="_blank">
+                    <span data-i18n="officialWebsite">Official Website</span>: https://www.ainewtab.app
                   </a>
-                  <a href="mailto:hello@ainewtab.app" class="about-link" target="_blank">
-                    <span class="material-icons">feedback</span>
-                    <span data-i18n="feedback">Email</span>
-                  </a>
-                  <a href="https://cooing-loganberry-b74.notion.site/Tabmark-59054bd6e444458986d1fc61a383e095" class="about-link" target="_blank">
-                    <span class="material-icons">feedback</span>
-                    <span data-i18n="feedbacks">Feedback</span>
-                  </a>
-                  <p class="official-website">
-                    <a href="https://www.ainewtab.app" target="_blank">
-                      <span data-i18n="officialWebsite">Official Website</span>: https://www.ainewtab.app
-                    </a>
-                  </p>
-               </div>
-             </div>
-           </div>
+                </p>
+              </div>
+            </div>
+          </div>
 
         </div>
       </div>
@@ -574,13 +600,13 @@
           <h3 class="category-title" data-i18n="aiSearchEnginesTitle">__MSG_aiSearchEnginesTitle__</h3>
           <div class="search-engine-grid" id="ai-search-engines"></div>
         </div>
-        
+
         <!-- General Search Engines -->
         <div class="search-engine-category">
           <h3 class="category-title" data-i18n="generalSearchEnginesTitle">__MSG_generalSearchEnginesTitle__</h3>
           <div class="search-engine-grid" id="search-engines"></div>
         </div>
-        
+
         <!-- Social Media -->
         <div class="search-engine-category">
           <h3 class="category-title" data-i18n="socialSearchEnginesTitle">__MSG_socialSearchEnginesTitle__</h3>
@@ -592,18 +618,22 @@
           <h3 class="category-title" data-i18n="customSearchEnginesTitle">__MSG_customSearchEnginesTitle__</h3>
           <div class="custom-engine-container">
             <div class="custom-engine-grid" id="custom-engines"></div>
-            
+
             <div class="custom-engine-form">
               <div class="input-container">
-                <input type="text" id="custom-engine-name" data-i18n-placeholder="searchEngineNamePlaceholder" class="custom-input">
+                <input type="text" id="custom-engine-name" data-i18n-placeholder="searchEngineNamePlaceholder"
+                  class="custom-input">
               </div>
               <div class="input-container">
-                <input type="text" id="custom-engine-url" data-i18n-placeholder="searchEngineUrlPlaceholder" class="custom-input">
+                <input type="text" id="custom-engine-url" data-i18n-placeholder="searchEngineUrlPlaceholder"
+                  class="custom-input">
               </div>
               <div class="input-container">
-                <input type="text" id="custom-engine-icon" data-i18n-placeholder="searchEngineIconPlaceholder" class="custom-input">
+                <input type="text" id="custom-engine-icon" data-i18n-placeholder="searchEngineIconPlaceholder"
+                  class="custom-input">
               </div>
-              <button id="add-custom-engine" class="custom-button" data-i18n="addSearchEngineButton">__MSG_addSearchEngineButton__</button>
+              <button id="add-custom-engine" class="custom-button"
+                data-i18n="addSearchEngineButton">__MSG_addSearchEngineButton__</button>
             </div>
           </div>
         </div>
@@ -627,4 +657,5 @@
     </div>
   </div>
 </body>
+
 </html>
